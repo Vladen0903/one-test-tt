@@ -112,6 +112,36 @@ export async function PATCH(
     const body = await req.json()
     const data = updateTaskSchema.parse(body)
 
+    // Get existing task to check permissions
+    const existingTask = await prisma.task.findUnique({
+      where: { id: params.id },
+      include: {
+        project: {
+          include: {
+            members: {
+              where: { userId: user.id },
+            },
+          },
+        },
+      },
+    })
+
+    if (!existingTask) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+    }
+
+    // Check permissions: only admin, creator, or assignee can edit
+    const isCreator = existingTask.createdBy === user.id
+    const isAssignee = existingTask.assigneeId === user.id
+    const isAdmin = user.role === 'admin' || existingTask.project.members.some(m => m.role === 'admin')
+
+    if (!isCreator && !isAssignee && !isAdmin) {
+      return NextResponse.json(
+        { error: 'You do not have permission to edit this task' },
+        { status: 403 }
+      )
+    }
+
     const updateData: any = {}
     if (data.title !== undefined) updateData.title = data.title
     if (data.description !== undefined) updateData.description = data.description
