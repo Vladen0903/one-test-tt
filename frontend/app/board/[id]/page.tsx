@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { ArrowLeft, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus, X, Settings } from 'lucide-react'
 import TaskModal from '@/components/TaskModal'
+import ColumnsManager from '@/components/ColumnsManager'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface Task {
   id: string
