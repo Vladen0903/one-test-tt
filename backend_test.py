@@ -1434,7 +1434,26 @@ class TTManagerAPITester:
         """Test Team Member Update API - Advanced Permissions (v2.0)"""
         self.log("=== Testing Team Member Update API ===")
         
-        # Get the member ID for User 2 (should be admin from previous tests)
+        # First, ensure User 2 is added to the team if not already there
+        self.log("Ensuring User 2 is in team...")
+        user2_email = None
+        original_token = self.auth_token
+        self.auth_token = self.user2_token
+        user2_response = self.make_request("GET", "/auth/me")
+        if user2_response and user2_response.status_code == 200:
+            user2_email = user2_response.json().get("user", {}).get("email")
+        
+        self.auth_token = original_token
+        
+        if user2_email:
+            # Add User 2 to team if not already there
+            add_user2_data = {
+                "email": user2_email,
+                "role": "member"
+            }
+            self.make_request("POST", f"/teams/{self.team_id}/members", add_user2_data)
+        
+        # Get the member ID for User 2 and User 3
         response = self.make_request("GET", f"/teams/{self.team_id}/members")
         if not response or response.status_code != 200:
             self.log("❌ Failed to get team members for update test", "ERROR")
@@ -1450,8 +1469,11 @@ class TTManagerAPITester:
             elif member.get("user", {}).get("id") == self.user3_id:
                 user3_member = member
                 
-        if not user2_member or not user3_member:
-            self.log("❌ Could not find User 2 or User 3 in team members", "ERROR")
+        if not user2_member:
+            self.log("❌ Could not find User 2 in team members", "ERROR")
+            return False
+        if not user3_member:
+            self.log("❌ Could not find User 3 in team members", "ERROR")
             return False
         
         # Test 1: Update member role, position, accessibleSections, projectIds
