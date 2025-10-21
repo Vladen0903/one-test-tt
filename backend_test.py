@@ -1146,6 +1146,14 @@ class TTManagerAPITester:
         """Clean up test data"""
         self.log("=== Cleaning Up Test Data ===")
         
+        # Delete releases
+        for release_id in self.release_ids:
+            response = self.make_request("DELETE", f"/releases/{release_id}")
+            if response and response.status_code == 200:
+                self.log(f"✅ Release deleted: {release_id}")
+            else:
+                self.log(f"❌ Failed to delete release: {release_id}", "ERROR")
+        
         # Delete sprints
         for sprint_id in self.sprint_ids:
             response = self.make_request("DELETE", f"/sprints/{sprint_id}")
