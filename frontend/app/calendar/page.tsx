@@ -417,11 +417,13 @@ export default function CalendarPage() {
           {/* Calendar days */}
           <div className="grid grid-cols-7">
             {days.map((date, index) => {
-              const dayEvents = getEventsForDay(date)
+              const dayData = getEventsForDay(date)
               const isToday = date && 
                 date.getDate() === new Date().getDate() &&
                 date.getMonth() === new Date().getMonth() &&
                 date.getFullYear() === new Date().getFullYear()
+
+              const totalItems = dayData.events.length + dayData.tasks.length + dayData.releases.length
 
               return (
                 <div
@@ -438,7 +440,8 @@ export default function CalendarPage() {
                         {date.getDate()}
                       </div>
                       <div className="space-y-1">
-                        {dayEvents.slice(0, 3).map((event) => {
+                        {/* Events */}
+                        {dayData.events.slice(0, 2).map((event) => {
                           const EventIcon = eventTypeIcons[event.type as keyof typeof eventTypeIcons]
                           return (
                             <div
@@ -451,20 +454,35 @@ export default function CalendarPage() {
                                 <EventIcon className="w-3 h-3 flex-shrink-0" />
                                 <span className="truncate">{event.title}</span>
                               </div>
-                              {!event.allDay && (
-                                <div className="text-[10px] opacity-90 mt-0.5">
-                                  {new Date(event.startTime).toLocaleTimeString('en-US', {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                  })}
-                                </div>
-                              )}
                             </div>
                           )
                         })}
-                        {dayEvents.length > 3 && (
+                        
+                        {/* Tasks */}
+                        {dayData.tasks.slice(0, 3 - dayData.events.length).map((task) => (
+                          <div
+                            key={task.id}
+                            className="text-xs p-1.5 rounded bg-orange-500/80 text-white truncate flex items-center gap-1"
+                          >
+                            <Flag className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{task.title}</span>
+                          </div>
+                        ))}
+
+                        {/* Releases */}
+                        {dayData.releases.slice(0, 3 - dayData.events.length - dayData.tasks.length).map((release) => (
+                          <div
+                            key={release.id}
+                            className="text-xs p-1.5 rounded bg-green-500/80 text-white truncate flex items-center gap-1"
+                          >
+                            <Box className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{release.name}</span>
+                          </div>
+                        ))}
+
+                        {totalItems > 3 && (
                           <div className="text-xs text-muted-foreground px-1.5">
-                            +{dayEvents.length - 3} more
+                            +{totalItems - 3} more
                           </div>
                         )}
                       </div>
