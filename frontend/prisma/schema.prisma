@@ -178,8 +178,21 @@ model Release {
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   tasks   Task[]
+  boards  ReleaseBoard[]
 
   @@map("releases")
+}
+
+model ReleaseBoard {
+  id        String @id @default(uuid())
+  releaseId String @map("release_id")
+  boardId   String @map("board_id")
+
+  release Release @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@unique([releaseId, boardId])
+  @@map("release_boards")
 }
 
 model Task {
