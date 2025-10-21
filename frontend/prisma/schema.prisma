@@ -209,9 +209,22 @@ model Tag {
   color     String
   createdAt DateTime @default(now()) @map("created_at")
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team  Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tasks TaskTag[]
 
   @@map("tags")
+}
+
+model TaskTag {
+  id     String @id @default(uuid())
+  taskId String @map("task_id")
+  tagId  String @map("tag_id")
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, tagId])
+  @@map("task_tags")
 }
 
 model Task {
