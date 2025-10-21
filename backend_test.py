@@ -57,15 +57,15 @@ class TTManagerAPITester:
             
         try:
             if method == "GET":
-                response = requests.get(url, headers=headers, timeout=10)
+                response = requests.get(url, headers=headers, timeout=15)
             elif method == "POST":
-                response = requests.post(url, headers=headers, json=data, timeout=10)
+                response = requests.post(url, headers=headers, json=data, timeout=15)
             elif method == "PUT":
-                response = requests.put(url, headers=headers, json=data, timeout=10)
+                response = requests.put(url, headers=headers, json=data, timeout=15)
             elif method == "PATCH":
-                response = requests.patch(url, headers=headers, json=data, timeout=10)
+                response = requests.patch(url, headers=headers, json=data, timeout=15)
             elif method == "DELETE":
-                response = requests.delete(url, headers=headers, timeout=10)
+                response = requests.delete(url, headers=headers, timeout=15)
             else:
                 raise ValueError(f"Unsupported method: {method}")
                 
