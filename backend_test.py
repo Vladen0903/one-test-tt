@@ -1737,10 +1737,14 @@ class TTManagerAPITester:
         # Test 2: Test with invalid date
         self.log("Testing Calendar Day API with missing date...")
         response = self.make_request("GET", "/calendar/day")
-        if response and response.status_code == 400:
-            self.log("✅ Missing date parameter properly rejected")
+        if response:
+            if response.status_code == 400:
+                self.log("✅ Missing date parameter properly rejected")
+            else:
+                self.log(f"❌ Should reject missing date: {response.status_code} - {response.text}", "ERROR")
+                return False
         else:
-            self.log(f"❌ Should reject missing date: {response.status_code if response else 'No response'}", "ERROR")
+            self.log("❌ No response received for missing date test", "ERROR")
             return False
         
         # Test 3: Test unauthorized access
