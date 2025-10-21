@@ -61,6 +61,7 @@ export default function SettingsPage() {
               </p>
               <div className="grid grid-cols-3 gap-4">
                 <button
+                  type="button"
                   onClick={() => setLanguage('en')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     language === 'en'
@@ -72,6 +73,7 @@ export default function SettingsPage() {
                   <div className="font-medium">English</div>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setLanguage('ru')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     language === 'ru'
@@ -83,6 +85,7 @@ export default function SettingsPage() {
                   <div className="font-medium">Русский</div>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setLanguage('uk')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     language === 'uk'
@@ -93,6 +96,9 @@ export default function SettingsPage() {
                   <div className="text-3xl mb-2">🇺🇦</div>
                   <div className="font-medium">Українська</div>
                 </button>
+              </div>
+              <div className="pt-4">
+                <p className="text-sm text-green-500">✓ Language saved automatically</p>
               </div>
             </div>
           </div>
