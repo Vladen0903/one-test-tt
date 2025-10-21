@@ -241,12 +241,24 @@ export default function ReleasesPage() {
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleDeleteRelease(release.id)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedReleaseId(release.id)
+                      setShowShareModal(true)
+                    }}
+                    className="text-muted-foreground hover:text-primary"
+                    title={t('shareRelease')}
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteRelease(release.id)}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {release.description && (
