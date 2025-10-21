@@ -199,6 +199,42 @@ frontend:
         agent: "main"
         comment: "Replaced old inline task modal with new TaskModal component. Simplified state management by removing local projectMembers fetching and old modal code. Task clicking now opens the enhanced modal."
 
+  - task: "Calendar Page with Event Management"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/calendar/page.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created full calendar page with month view, event creation modal, event details modal, project filtering, color-coded events, all-day event support, and event type icons (meeting, call, deadline, event, other)."
+
+  - task: "Team Member Management Page"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/team/page.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Built comprehensive team management page with member list, add/remove members, role-based permissions display (Admin/Member/Viewer), project selection, and role permissions guide."
+
+  - task: "Comments in Task Modal"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/components/TaskModal.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added comment creation form to TaskModal. Users can now add comments to tasks with auto-refresh after posting. Comments display with author info and timestamps."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
