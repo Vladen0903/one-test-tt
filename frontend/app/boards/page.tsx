@@ -8,13 +8,15 @@ import { useLanguage } from '@/lib/LanguageContext'
 
 interface Board {
   id: string
-  name: string
-  description: string | null
-  projectId: string
-  project: {
+  title: string
+  projectId: string | null
+  project?: {
     id: string
     name: string
     key: string
+  } | null
+  _count?: {
+    tasks: number
   }
 }
 
