@@ -43,24 +43,27 @@ class TTManagerAPITester:
             
         try:
             if method == "GET":
-                response = requests.get(url, headers=headers)
+                response = requests.get(url, headers=headers, timeout=10)
             elif method == "POST":
-                response = requests.post(url, headers=headers, json=data)
+                response = requests.post(url, headers=headers, json=data, timeout=10)
             elif method == "PUT":
-                response = requests.put(url, headers=headers, json=data)
+                response = requests.put(url, headers=headers, json=data, timeout=10)
             elif method == "PATCH":
-                response = requests.patch(url, headers=headers, json=data)
+                response = requests.patch(url, headers=headers, json=data, timeout=10)
             elif method == "DELETE":
-                response = requests.delete(url, headers=headers)
+                response = requests.delete(url, headers=headers, timeout=10)
             else:
                 raise ValueError(f"Unsupported method: {method}")
                 
             return response
-        except requests.exceptions.ConnectionError:
-            self.log(f"Connection error to {url}", "ERROR")
+        except requests.exceptions.ConnectionError as e:
+            self.log(f"Connection error to {url}: {str(e)}", "ERROR")
+            return None
+        except requests.exceptions.Timeout as e:
+            self.log(f"Timeout error to {url}: {str(e)}", "ERROR")
             return None
         except Exception as e:
-            self.log(f"Request error: {str(e)}", "ERROR")
+            self.log(f"Request error to {url}: {str(e)}", "ERROR")
             return None
     
     def test_user_registration_and_login(self):
