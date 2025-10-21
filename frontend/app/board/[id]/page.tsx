@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { ArrowLeft, Plus, X, Trash2, Calendar, User } from 'lucide-react'
+import { ArrowLeft, Plus, X } from 'lucide-react'
+import TaskModal from '@/components/TaskModal'
 
 interface Task {
   id: string
