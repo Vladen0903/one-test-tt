@@ -207,8 +207,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Sprint CRUD APIs - Test create, update, start, complete, and delete operations"
-    - "Labels APIs - Test label creation, color validation, and assignment"
     - "Enhanced Task Modal - Test all fields, edit mode, and delete functionality"
     - "Backlog functionality - Test sprint creation, start/complete, and task filtering"
   stuck_tasks: []
