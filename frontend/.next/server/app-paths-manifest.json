@@ -1,4 +1,12 @@
 {
   "/page": "app/page.js",
-  "/api/auth/register/route": "app/api/auth/register/route.js"
+  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/api/teams/route": "app/api/teams/route.js",
+  "/api/projects/route": "app/api/projects/route.js",
+  "/api/boards/route": "app/api/boards/route.js",
+  "/api/tasks/route": "app/api/tasks/route.js",
+  "/api/calendar/route": "app/api/calendar/route.js",
+  "/api/calendar/[id]/route": "app/api/calendar/[id]/route.js",
+  "/api/comments/route": "app/api/comments/route.js",
+  "/api/projects/[id]/members/route": "app/api/projects/[id]/members/route.js"
 }
