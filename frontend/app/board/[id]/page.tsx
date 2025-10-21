@@ -67,17 +67,6 @@ export default function BoardPage() {
         setBoard(boardData.board)
         setColumns(boardData.board.columns || [])
 
-        // Fetch project members
-        if (boardData.board.projectId) {
-          const projectRes = await fetch(`/api/projects/${boardData.board.projectId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          if (projectRes.ok) {
-            const projectData = await projectRes.json()
-            setProjectMembers(projectData.project.members?.map((m: any) => m.user) || [])
-          }
-        }
-
         const tasksByColumn: Record<string, Task[]> = {}
         for (const column of boardData.board.columns || []) {
           const tasksRes = await fetch(
