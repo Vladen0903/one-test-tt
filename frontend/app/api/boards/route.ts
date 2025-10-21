@@ -4,7 +4,8 @@ import { getUserFromToken } from '@/lib/auth'
 import { z } from 'zod'
 
 const createBoardSchema = z.object({
-  projectId: z.string(),
+  projectId: z.string().optional(),
+  teamId: z.string().optional(),
   title: z.string().min(2),
   background: z.string().optional(),
 })
