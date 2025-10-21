@@ -130,8 +130,8 @@ class CardUpdate(BaseModel):
     description: Optional[str] = None
     list_id: Optional[str] = None
     position: Optional[int] = None
-    assigned_to: Optional[List[str]] = None
-    labels: Optional[List[str]] = None
+    assigned_to: Optional[ListType[str]] = None
+    labels: Optional[ListType[str]] = None
     due_date: Optional[datetime] = None
 
 
