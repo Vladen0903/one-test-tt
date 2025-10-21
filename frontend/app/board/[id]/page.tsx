@@ -40,11 +40,13 @@ interface User {
 export default function BoardPage() {
   const params = useParams()
   const router = useRouter()
+  const { t } = useLanguage()
   const [board, setBoard] = useState<Board | null>(null)
   const [columns, setColumns] = useState<Column[]>([])
   const [tasks, setTasks] = useState<Record<string, Task[]>>({})
   const [loading, setLoading] = useState(true)
   const [showCreateTask, setShowCreateTask] = useState<string | null>(null)
+  const [showColumnsManager, setShowColumnsManager] = useState(false)
   const [newTask, setNewTask] = useState({ title: '', description: '' })
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
