@@ -12,6 +12,9 @@ const updateTaskSchema = z.object({
   dueDate: z.string().optional().nullable(),
   assigneeId: z.string().optional().nullable(),
   position: z.number().optional(),
+  sprintId: z.string().optional().nullable(),
+  storyPoints: z.number().optional().nullable(),
+  labels: z.array(z.string()).optional(),
 })
 
 export async function GET(
