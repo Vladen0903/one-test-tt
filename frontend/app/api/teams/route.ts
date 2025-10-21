@@ -10,7 +10,7 @@ const createTeamSchema = z.object({
 export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get('authorization')?.replace('Bearer ', '')
-    const user = await getUserFromToken(token)
+    const user = await getUserFromToken(token || null)
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const token = req.headers.get('authorization')?.replace('Bearer ', '')
-    const user = await getUserFromToken(token)
+    const user = await getUserFromToken(token || null)
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

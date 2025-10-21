@@ -4,7 +4,7 @@ import { getUserFromToken } from '@/lib/auth'
 export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get('authorization')?.replace('Bearer ', '') || null
-    const user = await getUserFromToken(token)
+    const user = await getUserFromToken(token || null)
 
     if (!user) {
       return NextResponse.json(
