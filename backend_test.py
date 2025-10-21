@@ -1747,18 +1747,22 @@ class TTManagerAPITester:
         
         # Test 2: Test with missing date (but valid auth)
         self.log("Testing Calendar Day API with missing date...")
-        response = self.make_request("GET", "/calendar/day")
-        if response:
+        try:
+            # Make direct request to avoid timeout issues
+            url = f"{self.base_url}/calendar/day"
+            headers = self.headers.copy()
+            headers["Authorization"] = f"Bearer {self.auth_token}"
+            
+            response = requests.get(url, headers=headers, timeout=20)
             if response.status_code == 400:
                 self.log("✅ Missing date parameter properly rejected")
             elif response.status_code == 401:
-                # This is also acceptable - auth is checked first
                 self.log("✅ Authentication required (expected behavior)")
             else:
                 self.log(f"❌ Unexpected response for missing date: {response.status_code} - {response.text}", "ERROR")
                 return False
-        else:
-            self.log("❌ No response received for missing date test", "ERROR")
+        except Exception as e:
+            self.log(f"❌ Error testing missing date: {str(e)}", "ERROR")
             return False
         
         # Test 3: Test unauthorized access
