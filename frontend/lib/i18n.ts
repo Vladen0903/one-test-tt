@@ -211,6 +211,22 @@ export const translations = {
     profile: 'Профиль',
     accountSettings: 'Настройки Аккаунта',
     
+    // Сообщения
+    noTeamsYet: 'Пока нет команд',
+    noProjectsYet: 'Пока нет проектов',
+    createFirstTeam: 'Создайте свою первую команду',
+    createFirstProject: 'Создайте свой первый проект',
+    
+    // Действия
+    viewProject: 'Открыть Проект',
+    viewBoard: 'Открыть Доску',
+    
+    // Доски
+    board: 'Доска',
+    boards: 'Доски',
+    createBoard: 'Создать Доску',
+    boardName: 'Название Доски',
+    
     // Уровни приоритета
     lowest: 'Минимальный',
     low: 'Низкий',
