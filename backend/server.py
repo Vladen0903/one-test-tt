@@ -86,7 +86,7 @@ class BoardCreate(BaseModel):
 class BoardUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    members: Optional[List[str]] = None
+    members: Optional[ListType[str]] = None
 
 class List(BaseModel):
     model_config = ConfigDict(extra="ignore")
