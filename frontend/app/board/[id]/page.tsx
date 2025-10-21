@@ -330,6 +330,17 @@ export default function BoardPage() {
           onUpdate={fetchData}
         />
       )}
+
+      {/* Columns Manager Modal */}
+      {showColumnsManager && (
+        <ColumnsManager
+          boardId={params.id as string}
+          onClose={() => {
+            setShowColumnsManager(false)
+            fetchData()
+          }}
+        />
+      )}
     </div>
   )
 }
