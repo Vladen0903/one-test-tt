@@ -60,6 +60,8 @@ export default function CalendarPage() {
   const [selectedProject, setSelectedProject] = useState<string>('all')
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showDayTasksModal, setShowDayTasksModal] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
   const [newEvent, setNewEvent] = useState({
