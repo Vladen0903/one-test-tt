@@ -405,6 +405,18 @@ export default function ReleasesPage() {
           </div>
         </div>
       )}
+
+      {/* Share Release Modal */}
+      {showShareModal && selectedReleaseId && (
+        <ShareReleaseModal
+          releaseId={selectedReleaseId}
+          onClose={() => {
+            setShowShareModal(false)
+            setSelectedReleaseId(null)
+            fetchReleases()
+          }}
+        />
+      )}
     </div>
   )
 }
