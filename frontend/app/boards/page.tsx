@@ -215,42 +215,71 @@ export default function BoardsPage() {
                 <label className="block text-sm font-medium mb-2">{t('boardName')} *</label>
                 <input
                   type="text"
-                  value={newBoard.name}
-                  onChange={(e) => setNewBoard({ ...newBoard, name: e.target.value })}
+                  value={newBoard.title}
+                  onChange={(e) => setNewBoard({ ...newBoard, title: e.target.value })}
                   placeholder="Development Board"
                   className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">{t('description')}</label>
-                <textarea
-                  value={newBoard.description}
-                  onChange={(e) => setNewBoard({ ...newBoard, description: e.target.value })}
-                  placeholder="Board description..."
-                  className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                  rows={3}
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="workWithoutProject"
+                  checked={newBoard.workWithoutProject}
+                  onChange={(e) => setNewBoard({ ...newBoard, workWithoutProject: e.target.checked })}
+                  className="w-4 h-4"
                 />
+                <label htmlFor="workWithoutProject" className="text-sm">
+                  {t('workWithoutProject')}
+                </label>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">{t('projectName')} *</label>
-                {projects.length > 0 ? (
-                  <select
-                    value={newBoard.projectId}
-                    onChange={(e) => setNewBoard({ ...newBoard, projectId: e.target.value })}
-                    className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                    required
-                  >
-                    {projects.map((project) => (
-                      <option key={project.id} value={project.id}>
-                        {project.name} ({project.key})
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="text-sm text-muted-foreground">No projects available</div>
-                )}
-              </div>
+
+              {!newBoard.workWithoutProject && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('projectName')}</label>
+                  {projects.length > 0 ? (
+                    <select
+                      value={newBoard.projectId}
+                      onChange={(e) => setNewBoard({ ...newBoard, projectId: e.target.value })}
+                      className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
+                    >
+                      <option value="">{t('selectProject')}</option>
+                      {projects.map((project) => (
+                        <option key={project.id} value={project.id}>
+                          {project.name} ({project.key})
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No projects available</div>
+                  )}
+                </div>
+              )}
+
+              {newBoard.workWithoutProject && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('selectTeam')} (Optional)</label>
+                  {teams.length > 0 ? (
+                    <select
+                      value={newBoard.teamId}
+                      onChange={(e) => setNewBoard({ ...newBoard, teamId: e.target.value })}
+                      className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
+                    >
+                      <option value="">Personal Board</option>
+                      {teams.map((team) => (
+                        <option key={team.id} value={team.id}>
+                          {team.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No teams available</div>
+                  )}
+                </div>
+              )}
+
               <div className="flex gap-2 pt-2">
                 <button
                   type="submit"
