@@ -1315,8 +1315,13 @@ class TTManagerAPITester:
             "title": "Unauthorized Update"
         }
         
-        response = self.make_request("PATCH", f"/boards/{board_id}/settings", unauthorized_update)
-        if response:
+        try:
+            # Make direct request to avoid timeout issues
+            url = f"{self.base_url}/boards/{board_id}/settings"
+            headers = self.headers.copy()
+            headers["Authorization"] = f"Bearer {self.user2_token}"
+            
+            response = requests.patch(url, headers=headers, json=unauthorized_update, timeout=20)
             if response.status_code == 403:
                 self.log("✅ Non-admin user properly blocked from updating board settings")
             elif response.status_code == 401:
@@ -1325,8 +1330,8 @@ class TTManagerAPITester:
                 self.log(f"❌ Should block non-admin user: {response.status_code} - {response.text}", "ERROR")
                 self.auth_token = original_token
                 return False
-        else:
-            self.log("❌ No response received for board settings permission test", "ERROR")
+        except Exception as e:
+            self.log(f"❌ Error testing board settings permissions: {str(e)}", "ERROR")
             self.auth_token = original_token
             return False
             
