@@ -53,7 +53,6 @@ class TTManagerPhase2Tester:
             headers["Authorization"] = f"Bearer {auth_token}"
             
         try:
-            self.log(f"Making {method} request to {url}", "DEBUG")
             if method == "GET":
                 response = requests.get(url, headers=headers, timeout=30)
             elif method == "POST":
@@ -66,8 +65,6 @@ class TTManagerPhase2Tester:
                 response = requests.delete(url, headers=headers, timeout=30)
             else:
                 raise ValueError(f"Unsupported method: {method}")
-            
-            self.log(f"Response: {response.status_code} - {response.text[:200]}", "DEBUG")
             return response
         except requests.exceptions.ConnectionError as e:
             self.log(f"Connection error to {url}: {str(e)}", "ERROR")
