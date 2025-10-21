@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-TT-Manager Backend API Testing Suite - Phase 2
-Tests Calendar Events APIs, Comments APIs, and Project Members APIs
+TT-Manager Backend API Testing Suite - Phase 3 Final
+Tests Gantt Data API, Releases CRUD APIs, and Enhanced Project Members API
 """
 
 import requests
