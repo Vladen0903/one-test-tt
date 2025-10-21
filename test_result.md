@@ -150,6 +150,54 @@ backend:
         agent: "testing"
         comment: "✅ ENHANCED TASK APIs TESTED SUCCESSFULLY: Updated tasks with sprintId (assign/remove from sprint), storyPoints (integer values), and labels array (multiple label assignment). Task details retrieval includes all fields: assignee, creator, labels, comments, attachments, subtasks, checklists. Label assignment/removal through TaskLabel junction table working correctly. GET task endpoint returns comprehensive task data."
 
+  - task: "Calendar Events CRUD APIs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/calendar/route.ts, /app/frontend/app/api/calendar/[id]/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Calendar Event APIs with GET (list with date range filtering), POST (create event with attendees), PUT (update event), PATCH (update attendee status), DELETE operations. Includes project/team scoping and attendee management."
+
+  - task: "Comments CRUD APIs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/comments/route.ts, /app/frontend/app/api/comments/[id]/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Comments APIs with GET (list by task), POST (create), PUT (update - author only), DELETE (delete - author only). Includes proper authorization checks for project access."
+
+  - task: "Project Members Management APIs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/projects/[id]/members/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Project Members APIs with GET (list members), POST (add member by email with role), PUT (update member role - admin only), DELETE (remove member - admin only). Includes role-based permission checks."
+
+  - task: "Prisma Schema - Calendar Models"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/prisma/schema.prisma"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added CalendarEvent and CalendarAttendee models to Prisma schema with relations to User, Project, and Team. Includes fields for event details, time, type, color, and attendee status tracking. Database migration applied successfully."
+
 frontend:
   - task: "Backlog page - Fixed task filtering"
     implemented: true
