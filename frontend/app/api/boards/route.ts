@@ -37,7 +37,13 @@ export async function GET(req: NextRequest) {
       })
       return NextResponse.json({ boards })
     } else {
-      // Get all boards user has access to
+      // Get all boards user has access to (both project-based and personal)
+      const teams = await prisma.teamMember.findMany({
+        where: { userId: user.id },
+        select: { teamId: true },
+      })
+      const teamIds = teams.map((t) => t.teamId)
+
       const projects = await prisma.project.findMany({
         where: {
           members: {
@@ -48,12 +54,15 @@ export async function GET(req: NextRequest) {
         },
         select: { id: true },
       })
-
       const projectIds = projects.map((p) => p.id)
 
       const boards = await prisma.board.findMany({
         where: {
-          projectId: { in: projectIds },
+          OR: [
+            { projectId: { in: projectIds } },
+            { AND: [{ projectId: null }, { teamId: { in: teamIds } }] },
+            { AND: [{ projectId: null }, { createdBy: user.id }] },
+          ],
         },
         include: {
           project: {
