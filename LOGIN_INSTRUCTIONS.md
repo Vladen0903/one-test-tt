@@ -118,7 +118,7 @@ http://localhost:3000
 
 **Preview URL** (если настроен):
 ```
-https://tt-manager-app.preview.emergentagent.com
+https://project-tracker-163.preview.emergentagent.com
 ```
 
 ## ✅ Проверка что API работает:
