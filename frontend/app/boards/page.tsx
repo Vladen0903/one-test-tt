@@ -33,10 +33,12 @@ export default function BoardsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [teams, setTeams] = useState<any[]>([])
   const [newBoard, setNewBoard] = useState({
-    name: '',
-    description: '',
+    title: '',
     projectId: '',
+    teamId: '',
+    workWithoutProject: false,
   })
 
   useEffect(() => {
