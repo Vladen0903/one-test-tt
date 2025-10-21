@@ -61,7 +61,7 @@ export default function BoardsPage() {
       if (projectsRes.ok) {
         const data = await projectsRes.json()
         setProjects(data.projects || [])
-        if (data.projects && data.projects.length > 0 && !newBoard.projectId) {
+        if (data.projects && data.projects.length > 0) {
           setNewBoard((prev) => ({ ...prev, projectId: data.projects[0].id }))
         }
       }
