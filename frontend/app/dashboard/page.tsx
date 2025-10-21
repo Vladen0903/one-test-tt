@@ -284,7 +284,7 @@ export default function DashboardPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-md transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                Create Team
+                {t('createTeam')}
               </button>
             </div>
 
