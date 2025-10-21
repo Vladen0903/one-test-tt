@@ -1290,7 +1290,25 @@ class TTManagerAPITester:
         
         # Test 3: Test admin/creator permissions (User 2 should not be able to update)
         self.log("Testing Board Settings Permissions...")
+        
+        # First, add User 2 to the project so they have access but not admin rights
+        user2_email = None
         original_token = self.auth_token
+        self.auth_token = self.user2_token
+        user2_response = self.make_request("GET", "/auth/me")
+        if user2_response and user2_response.status_code == 200:
+            user2_email = user2_response.json().get("user", {}).get("email")
+        
+        # Switch back to admin and add User 2 as member (not admin)
+        self.auth_token = original_token
+        if user2_email:
+            add_member_data = {
+                "email": user2_email,
+                "role": "member"
+            }
+            self.make_request("POST", f"/projects/{self.project_id}/members", add_member_data)
+        
+        # Now test with User 2 token
         self.auth_token = self.user2_token
         
         unauthorized_update = {
@@ -1301,7 +1319,7 @@ class TTManagerAPITester:
         if response and response.status_code == 403:
             self.log("✅ Non-admin user properly blocked from updating board settings")
         else:
-            self.log(f"❌ Should block non-admin user: {response.status_code if response else 'No response'}", "ERROR")
+            self.log(f"❌ Should block non-admin user: {response.status_code if response else 'No response'} - {response.text if response else ''}", "ERROR")
             self.auth_token = original_token
             return False
             
