@@ -124,6 +124,18 @@ export const translations = {
     assignedTo: 'Assigned to',
     selectUser: 'Select User',
     
+    // Additional
+    columns: 'Columns',
+    manageColumns: 'Manage Columns',
+    addColumn: 'Add Column',
+    columnTitle: 'Column Title',
+    shareRelease: 'Share Release',
+    attachBoards: 'Attach Boards',
+    tags: 'Tags',
+    addTag: 'Add Tag',
+    welcome: 'Welcome',
+    noData: 'No data available',
+    
     // Priority levels
     lowest: 'Lowest',
     low: 'Low',
