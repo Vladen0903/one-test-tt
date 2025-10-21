@@ -112,8 +112,8 @@ class Card(BaseModel):
     title: str
     description: Optional[str] = None
     position: int
-    assigned_to: List[str] = []  # User IDs
-    labels: List[str] = []
+    assigned_to: ListType[str] = []  # User IDs
+    labels: ListType[str] = []
     due_date: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
