@@ -32,6 +32,8 @@ export default function ReleasesPage() {
   const [releases, setReleases] = useState<Release[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [selectedReleaseId, setSelectedReleaseId] = useState<string | null>(null)
   const [newRelease, setNewRelease] = useState({
     name: '',
     description: '',
