@@ -471,7 +471,7 @@ async def create_card(card_data: CardCreate, current_user: User = Depends(get_cu
     
     return card
 
-@api_router.get("/lists/{list_id}/cards", response_model=List[Card])
+@api_router.get("/lists/{list_id}/cards", response_model=ListType[Card])
 async def get_cards(list_id: str, current_user: User = Depends(get_current_user)):
     # Check list and board access
     existing_list = await db.lists.find_one({"id": list_id}, {"_id": 0})
