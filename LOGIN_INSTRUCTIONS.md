@@ -118,7 +118,7 @@ http://localhost:3000
 
 **Preview URL** (если настроен):
 ```
-https://team-planner-30.preview.emergentagent.com
+https://tt-manager-app.preview.emergentagent.com
 ```
 
 ## ✅ Проверка что API работает:

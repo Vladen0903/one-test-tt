@@ -2,7 +2,7 @@
 
 ## ❌ Проблема
 
-Preview URL `https://team-planner-30.preview.emergentagent.com` не работает - API возвращает 502 Bad Gateway или старые FastAPI endpoints.
+Preview URL `https://tt-manager-app.preview.emergentagent.com` не работает - API возвращает 502 Bad Gateway или старые FastAPI endpoints.
 
 ## ✅ Решение
 
