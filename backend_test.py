@@ -563,7 +563,7 @@ class TTManagerAPITester:
         old_token = self.auth_token
         self.auth_token = None
         
-        response = self.make_request("GET", f"/sprints?projectId={self.project_id}")
+        response = self.make_request("GET", f"/sprints?projectId={self.project_id}", auth_required=False)
         if response and response.status_code == 401:
             self.log("✅ Unauthorized access properly rejected")
         else:
