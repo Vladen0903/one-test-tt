@@ -37,10 +37,12 @@ export async function GET(
       return NextResponse.json({ error: 'Board not found' }, { status: 404 })
     }
 
-    // Check access
-    if (board.project.members.length === 0) {
+    // Check access - board can be project-based, team-based, or personal
+    if (board.project && board.project.members.length === 0) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
+
+    // TODO: Add team-based and personal board access checks
 
     return NextResponse.json({ board })
   } catch (error) {
