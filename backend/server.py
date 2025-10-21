@@ -7,7 +7,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List as ListType, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 from passlib.context import CryptContext
