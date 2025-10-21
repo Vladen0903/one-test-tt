@@ -293,7 +293,7 @@ async def create_board(board_data: BoardCreate, current_user: User = Depends(get
     
     return board
 
-@api_router.get("/boards", response_model=List[Board])
+@api_router.get("/boards", response_model=ListType[Board])
 async def get_boards(current_user: User = Depends(get_current_user)):
     # Get boards where user is member or owner
     boards = await db.boards.find(
