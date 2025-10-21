@@ -4,13 +4,15 @@ import { getUserFromToken } from '@/lib/auth'
 import { z } from 'zod'
 
 const createTaskSchema = z.object({
-  projectId: z.string(),
+  projectId: z.string().optional(),
   boardId: z.string().optional(),
   columnId: z.string().optional(),
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(['lowest', 'low', 'medium', 'high', 'critical']).default('medium'),
+  assigneeId: z.string().optional(),
   dueDate: z.string().optional(),
+  startDate: z.string().optional(),
 })
 
 export async function GET(req: NextRequest) {
