@@ -1492,9 +1492,13 @@ class TTManagerAPITester:
             "projectIds": [self.project_id]
         }
         
+        self.log(f"Updating member {user2_member['id']} with data: {update_data}")
         response = self.make_request("PATCH", f"/teams/{self.team_id}/members/{user2_member['id']}", update_data)
-        if not response or response.status_code != 200:
-            self.log(f"❌ Update team member failed: {response.status_code if response else 'No response'}", "ERROR")
+        if not response:
+            self.log("❌ Update team member failed: No response received", "ERROR")
+            return False
+        elif response.status_code != 200:
+            self.log(f"❌ Update team member failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
         update_result = response.json()
