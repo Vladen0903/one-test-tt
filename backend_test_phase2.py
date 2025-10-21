@@ -337,12 +337,15 @@ class TTManagerPhase2Tester:
         # Test 6: User3 (not involved) tries to access/modify (should fail)
         self.log("Testing Unauthorized Access by Non-Attendee...")
         
-        # Try to update event as non-creator
+        # Try to update event as non-creator/non-attendee
         response = self.make_request("PUT", f"/calendar/{project_event_id}", update_data, auth_token=self.user3_token)
         if response and response.status_code == 403:
             self.log("✅ Non-creator properly blocked from updating event")
+        elif response:
+            self.log(f"❌ Should block non-creator from updating: {response.status_code} - {response.text[:100]}", "ERROR")
+            return False
         else:
-            self.log(f"❌ Should block non-creator from updating: {response.status_code if response else 'No response'}", "ERROR")
+            self.log("❌ No response received for unauthorized update test", "ERROR")
             return False
         
         # Test 7: Get single event with full details
