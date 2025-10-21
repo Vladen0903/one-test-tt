@@ -236,7 +236,7 @@ export default function DashboardPage() {
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <Users className="w-5 h-5" />
-            <span>Team</span>
+            <span>{t('company')}</span>
           </Link>
           <Link
             href="/settings"
