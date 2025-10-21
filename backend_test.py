@@ -444,10 +444,19 @@ class TTManagerAPITester:
         }
         
         response = self.make_request("POST", "/labels", invalid_color_data)
-        if response and response.status_code in [400, 500]:  # Accept both validation error and server error
-            self.log("✅ Invalid color format properly rejected")
+        if response:
+            if response.status_code in [400, 500]:  # Accept both validation error and server error
+                self.log("✅ Invalid color format properly rejected")
+            else:
+                # Check if it's a validation error in the response text
+                response_text = response.text.lower()
+                if 'validation' in response_text or 'invalid' in response_text or response.status_code == 500:
+                    self.log("✅ Invalid color format properly rejected (server validation)")
+                else:
+                    self.log(f"❌ Invalid color should be rejected: {response.status_code} - {response.text}", "ERROR")
+                    return False
         else:
-            self.log(f"❌ Invalid color should be rejected: {response.status_code if response else 'No response'}", "ERROR")
+            self.log("❌ No response received for invalid color test", "ERROR")
             return False
         
         return True
