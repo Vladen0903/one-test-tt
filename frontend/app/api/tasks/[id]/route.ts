@@ -120,8 +120,28 @@ export async function PATCH(
     if (data.status !== undefined) updateData.status = data.status
     if (data.position !== undefined) updateData.position = data.position
     if (data.assigneeId !== undefined) updateData.assigneeId = data.assigneeId
+    if (data.sprintId !== undefined) updateData.sprintId = data.sprintId
+    if (data.storyPoints !== undefined) updateData.storyPoints = data.storyPoints
     if (data.dueDate !== undefined) {
       updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null
+    }
+
+    // Handle labels if provided
+    if (data.labels !== undefined) {
+      // Remove existing labels
+      await prisma.taskLabel.deleteMany({
+        where: { taskId: params.id },
+      })
+
+      // Add new labels
+      if (data.labels.length > 0) {
+        await prisma.taskLabel.createMany({
+          data: data.labels.map((labelId) => ({
+            taskId: params.id,
+            labelId,
+          })),
+        })
+      }
     }
 
     const task = await prisma.task.update({
@@ -133,6 +153,11 @@ export async function PATCH(
             id: true,
             name: true,
             email: true,
+          },
+        },
+        labels: {
+          include: {
+            label: true,
           },
         },
       },
