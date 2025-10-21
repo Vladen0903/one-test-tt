@@ -1790,7 +1790,7 @@ class TTManagerAPITester:
     
     def run_all_tests(self):
         """Run all tests in sequence"""
-        self.log("Starting TT-Manager Backend API Tests...")
+        self.log("Starting TT-Manager v2.0 Backend API Tests...")
         
         # Setup phase
         if not self.test_user_registration_and_login():
@@ -1813,34 +1813,53 @@ class TTManagerAPITester:
             self.log("❌ Task setup failed", "ERROR")
             return False
         
-        # Setup multiple users for Phase 3 testing
+        # Setup multiple users for testing
         if not self.test_multi_user_setup():
             self.log("❌ Multi-user setup failed", "ERROR")
             return False
         
-        # Main Phase 3 tests
+        # Main v2.0 tests
         tests_passed = 0
-        total_tests = 3
+        total_tests = 6
         
-        if self.test_releases_crud_apis():
+        if self.test_boards_api_work_without_projects():
             tests_passed += 1
-            self.log("✅ Releases CRUD APIs tests PASSED")
+            self.log("✅ Boards API (Work Without Projects) tests PASSED")
         else:
-            self.log("❌ Releases CRUD APIs tests FAILED", "ERROR")
+            self.log("❌ Boards API (Work Without Projects) tests FAILED", "ERROR")
         
-        if self.test_gantt_data_api():
+        if self.test_board_settings_api():
             tests_passed += 1
-            self.log("✅ Gantt Data API tests PASSED")
+            self.log("✅ Board Settings API tests PASSED")
         else:
-            self.log("❌ Gantt Data API tests FAILED", "ERROR")
+            self.log("❌ Board Settings API tests FAILED", "ERROR")
         
-        if self.test_enhanced_project_members_api():
+        if self.test_team_members_management_api():
             tests_passed += 1
-            self.log("✅ Enhanced Project Members API tests PASSED")
+            self.log("✅ Team Members Management API tests PASSED")
         else:
-            self.log("❌ Enhanced Project Members API tests FAILED", "ERROR")
+            self.log("❌ Team Members Management API tests FAILED", "ERROR")
+        
+        if self.test_team_member_update_api():
+            tests_passed += 1
+            self.log("✅ Team Member Update API tests PASSED")
+        else:
+            self.log("❌ Team Member Update API tests FAILED", "ERROR")
+        
+        if self.test_tasks_api_enhanced():
+            tests_passed += 1
+            self.log("✅ Tasks API Enhanced tests PASSED")
+        else:
+            self.log("❌ Tasks API Enhanced tests FAILED", "ERROR")
+        
+        if self.test_calendar_day_api():
+            tests_passed += 1
+            self.log("✅ Calendar Day API tests PASSED")
+        else:
+            self.log("❌ Calendar Day API tests FAILED", "ERROR")
         
         # Cleanup
+        self.cleanup_v2()
         self.cleanup()
         
         # Summary
@@ -1849,7 +1868,7 @@ class TTManagerAPITester:
         self.log(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
         
         if tests_passed == total_tests:
-            self.log("🎉 ALL TESTS PASSED!")
+            self.log("🎉 ALL TT-MANAGER v2.0 TESTS PASSED!")
             return True
         else:
             self.log("❌ SOME TESTS FAILED")
