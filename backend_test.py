@@ -1023,13 +1023,20 @@ class TTManagerAPITester:
         
         # Test 3: CRITICAL - Verify User 2 is ALSO added to TEAM members (Bug Fix)
         self.log("CRITICAL TEST: Verifying User 2 is added to team members...")
-        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        response = self.make_request("GET", "/teams")
         if not response or response.status_code != 200:
-            self.log(f"❌ Get team members failed: {response.status_code if response else 'No response'}", "ERROR")
+            self.log(f"❌ Get teams failed: {response.status_code if response else 'No response'}", "ERROR")
             return False
             
-        team_members_result = response.json()
-        team_members = team_members_result.get("members", [])
+        teams_result = response.json()
+        teams = teams_result.get("teams", [])
+        
+        # Find our team and get its members
+        team_members = []
+        for team in teams:
+            if team.get("id") == self.team_id:
+                team_members = team.get("members", [])
+                break
         
         user2_in_team = False
         for member in team_members:
