@@ -816,46 +816,25 @@ class TTManagerAPITester:
         # First, create tasks with different date configurations
         self.log("Creating tasks with dates for Gantt testing...")
         
-        # Create tasks with dates (Note: API doesn't support startDate in creation, so we'll update after)
+        # Create tasks with dates (Note: Current API only supports dueDate, not startDate)
         tasks_with_dates = [
             {
-                "task_data": {
-                    "projectId": self.project_id,
-                    "boardId": self.board_id,
-                    "columnId": self.column_id,
-                    "title": "Task with Start and Due Date",
-                    "description": "Task for Gantt chart testing",
-                    "dueDate": (datetime.now() + timedelta(days=7)).isoformat(),
-                    "priority": "high"
-                },
-                "update_data": {
-                    "startDate": datetime.now().isoformat()
-                }
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task with Due Date 1",
+                "description": "Task for Gantt chart testing",
+                "dueDate": (datetime.now() + timedelta(days=7)).isoformat(),
+                "priority": "high"
             },
             {
-                "task_data": {
-                    "projectId": self.project_id,
-                    "boardId": self.board_id,
-                    "columnId": self.column_id,
-                    "title": "Task with Only Due Date",
-                    "description": "Task with due date only",
-                    "dueDate": (datetime.now() + timedelta(days=14)).isoformat(),
-                    "priority": "medium"
-                },
-                "update_data": None
-            },
-            {
-                "task_data": {
-                    "projectId": self.project_id,
-                    "boardId": self.board_id,
-                    "columnId": self.column_id,
-                    "title": "Task with Only Start Date",
-                    "description": "Task with start date only",
-                    "priority": "low"
-                },
-                "update_data": {
-                    "startDate": (datetime.now() + timedelta(days=3)).isoformat()
-                }
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task with Due Date 2",
+                "description": "Task with due date only",
+                "dueDate": (datetime.now() + timedelta(days=14)).isoformat(),
+                "priority": "medium"
             }
         ]
         
