@@ -380,6 +380,20 @@ class TTManagerPhase2Tester:
             
         task_id = self.task_ids[0]
         
+        # First, add User2 to the project so they can comment
+        self.log("Adding User2 to project for comments testing...")
+        add_member_data = {
+            "email": self.user2_email,
+            "role": "member"
+        }
+        
+        response = self.make_request("POST", f"/projects/{self.project_id}/members", add_member_data, auth_token=self.user1_token)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Failed to add User2 to project: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+        
+        self.log("✅ User2 added to project for comments testing")
+        
         # Test 1: Create comment from User1
         self.log("Testing Create Comment (User1)...")
         comment1_data = {
