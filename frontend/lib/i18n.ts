@@ -430,6 +430,18 @@ export const translations = {
     assignedTo: 'Призначено',
     selectUser: 'Вибрати Користувача',
     
+    // Додатково
+    columns: 'Колонки',
+    manageColumns: 'Управління Колонками',
+    addColumn: 'Додати Колонку',
+    columnTitle: 'Назва Колонки',
+    shareRelease: 'Поділитися Релізом',
+    attachBoards: 'Прив\'язати Дошки',
+    tags: 'Теги',
+    addTag: 'Додати Тег',
+    welcome: 'Ласкаво просимо',
+    noData: 'Немає даних',
+    
     // Рівні пріоритету
     lowest: 'Мінімальний',
     low: 'Низький',
