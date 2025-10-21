@@ -43,6 +43,7 @@ model Team {
   owner    User         @relation("TeamOwner", fields: [createdBy], references: [id], onDelete: Cascade)
   members  TeamMember[]
   projects Project[]
+  calendarEvents CalendarEvent[]
 
   @@map("teams")
 }
