@@ -277,6 +277,18 @@ export const translations = {
     assignedTo: 'Назначено',
     selectUser: 'Выбрать Пользователя',
     
+    // Дополнительно
+    columns: 'Колонки',
+    manageColumns: 'Управление Колонками',
+    addColumn: 'Добавить Колонку',
+    columnTitle: 'Название Колонки',
+    shareRelease: 'Поделиться Релизом',
+    attachBoards: 'Привязать Доски',
+    tags: 'Теги',
+    addTag: 'Добавить Тег',
+    welcome: 'Добро пожаловать',
+    noData: 'Нет данных',
+    
     // Уровни приоритета
     lowest: 'Минимальный',
     low: 'Низкий',
