@@ -387,6 +387,25 @@ export const translations = {
     createBoard: 'Створити Дошку',
     boardName: 'Назва Дошки',
     
+    // Компанія/Команда
+    company: 'Компанія',
+    myCompany: 'Моя Компанія',
+    companyMembers: 'Співробітники Компанії',
+    addToCompany: 'Додати до Компанії',
+    
+    // Користувачі
+    users: 'Користувачі',
+    permissions: 'Права',
+    editUser: 'Редагувати Користувача',
+    selectProjects: 'Вибрати Проєкти',
+    selectBoards: 'Вибрати Дошки',
+    accessRights: 'Права Доступу',
+    
+    // Задачі
+    createdBy: 'Створив',
+    assignedTo: 'Призначено',
+    selectUser: 'Вибрати Користувача',
+    
     // Рівні пріоритету
     lowest: 'Мінімальний',
     low: 'Низький',
