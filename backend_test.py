@@ -1753,14 +1753,17 @@ class TTManagerAPITester:
         headers = {"Content-Type": "application/json"}
         
         try:
-            response = requests.get(url, headers=headers, timeout=5)
-            if response.status_code == 401:
+            response = requests.get(url, headers=headers, timeout=10)
+            if response and response.status_code == 401:
                 self.log("✅ Unauthorized access properly rejected")
             else:
-                self.log(f"❌ Should reject unauthorized access: {response.status_code} - {response.text}", "ERROR")
+                self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'} - {response.text if response else ''}", "ERROR")
                 return False
+        except requests.exceptions.RequestException as e:
+            self.log(f"❌ Request error testing unauthorized access: {str(e)}", "ERROR")
+            return False
         except Exception as e:
-            self.log(f"❌ Error testing unauthorized access: {str(e)}", "ERROR")
+            self.log(f"❌ Unexpected error testing unauthorized access: {str(e)}", "ERROR")
             return False
         
         return True
