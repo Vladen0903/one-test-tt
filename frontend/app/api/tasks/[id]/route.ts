@@ -151,11 +151,21 @@ export async function PATCH(
     if (data.priority !== undefined) updateData.priority = data.priority
     if (data.status !== undefined) updateData.status = data.status
     if (data.position !== undefined) updateData.position = data.position
-    if (data.assigneeId !== undefined) updateData.assigneeId = data.assigneeId
+    if (data.assigneeId !== undefined) {
+      updateData.assigneeId = data.assigneeId
+      // Track who assigned the task
+      if (data.assigneeId && data.assigneeId !== existingTask.assigneeId) {
+        updateData.assignedBy = user.id
+      }
+    }
     if (data.sprintId !== undefined) updateData.sprintId = data.sprintId
+    if (data.releaseId !== undefined) updateData.releaseId = data.releaseId
     if (data.storyPoints !== undefined) updateData.storyPoints = data.storyPoints
     if (data.dueDate !== undefined) {
       updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null
+    }
+    if (data.startDate !== undefined) {
+      updateData.startDate = data.startDate ? new Date(data.startDate) : null
     }
 
     // Handle labels if provided
