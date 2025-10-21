@@ -582,8 +582,6 @@ export const translations = {
     update: 'Оновити',
     close: 'Закрити',
     open: 'Відкрити',
-    shareRelease: 'Поділитися Релізом',
-    tasks: 'задачі',
   },
 }
 
