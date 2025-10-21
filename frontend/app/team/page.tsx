@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, UserPlus, MoreVertical, Shield, User as UserIcon, Eye, X, Crown } from 'lucide-react'
+import { useLanguage } from '@/lib/LanguageContext'
+import EditUserModal from '@/components/EditUserModal'
 
 interface TeamMember {
   id: string
