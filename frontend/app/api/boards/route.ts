@@ -96,26 +96,44 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { projectId, title, background } = createBoardSchema.parse(body)
+    const { projectId, teamId, title, background } = createBoardSchema.parse(body)
 
-    // Check project access
-    const projectMember = await prisma.projectMember.findFirst({
-      where: {
-        projectId,
-        userId: user.id,
-      },
-    })
+    // Check access: either project member, team member, or creating personal board
+    if (projectId) {
+      const projectMember = await prisma.projectMember.findFirst({
+        where: {
+          projectId,
+          userId: user.id,
+        },
+      })
 
-    if (!projectMember) {
-      return NextResponse.json(
-        { error: 'No access to this project' },
-        { status: 403 }
-      )
+      if (!projectMember) {
+        return NextResponse.json(
+          { error: 'No access to this project' },
+          { status: 403 }
+        )
+      }
+    } else if (teamId) {
+      const teamMember = await prisma.teamMember.findFirst({
+        where: {
+          teamId,
+          userId: user.id,
+        },
+      })
+
+      if (!teamMember) {
+        return NextResponse.json(
+          { error: 'No access to this team' },
+          { status: 403 }
+        )
+      }
     }
 
     const board = await prisma.board.create({
       data: {
-        projectId,
+        projectId: projectId || null,
+        teamId: teamId || null,
+        createdBy: user.id,
         title,
         background,
         columns: {
