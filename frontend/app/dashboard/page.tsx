@@ -218,13 +218,6 @@ export default function DashboardPage() {
             <span>{t('calendar')}</span>
           </Link>
           <Link
-            href="/gantt"
-            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
-          >
-            <BarChart3 className="w-5 h-5" />
-            <span>{t('gantt')}</span>
-          </Link>
-          <Link
             href="/releases"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
