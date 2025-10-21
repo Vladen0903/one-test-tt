@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'link'
+import Link from 'next/link'
 import { ArrowLeft, Plus, MoreVertical } from 'lucide-react'
 
 interface Task {
