@@ -333,6 +333,22 @@ export const translations = {
     profile: 'Профіль',
     accountSettings: 'Налаштування Акаунту',
     
+    // Повідомлення
+    noTeamsYet: 'Поки немає команд',
+    noProjectsYet: 'Поки немає проєктів',
+    createFirstTeam: 'Створіть свою першу команду',
+    createFirstProject: 'Створіть свій перший проєкт',
+    
+    // Дії
+    viewProject: 'Відкрити Проєкт',
+    viewBoard: 'Відкрити Дошку',
+    
+    // Дошки
+    board: 'Дошка',
+    boards: 'Дошки',
+    createBoard: 'Створити Дошку',
+    boardName: 'Назва Дошки',
+    
     // Рівні пріоритету
     lowest: 'Мінімальний',
     low: 'Низький',
