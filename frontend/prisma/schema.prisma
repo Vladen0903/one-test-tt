@@ -48,6 +48,7 @@ model Team {
   members  TeamMember[]
   projects Project[]
   calendarEvents CalendarEvent[]
+  tags     Tag[]
 
   @@map("teams")
 }
