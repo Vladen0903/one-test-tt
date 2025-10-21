@@ -597,8 +597,11 @@ class TTManagerPhase2Tester:
         response = self.make_request("POST", f"/projects/{self.project_id}/members", add_another_member_data, auth_token=self.user3_token)
         if response and response.status_code == 403:
             self.log("✅ Viewer properly blocked from adding members")
+        elif response:
+            self.log(f"❌ Should block viewer from adding members: {response.status_code} - {response.text[:100]}", "ERROR")
+            return False
         else:
-            self.log(f"❌ Should block viewer from adding members: {response.status_code if response else 'No response'}", "ERROR")
+            self.log("❌ No response received for viewer add member test", "ERROR")
             return False
         
         # Test 6: Update user2 role to "admin"
