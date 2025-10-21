@@ -188,14 +188,23 @@ export default function BoardPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border px-8 py-4 sticky top-0 z-10">
-        <div className="flex items-center gap-4">
-          <Link href={`/project/${board.projectId}`}>
-            <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Project
-            </button>
-          </Link>
-          <h1 className="text-2xl font-bold">{board.title}</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href={`/project/${board.projectId}`}>
+              <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Project
+              </button>
+            </Link>
+            <h1 className="text-2xl font-bold">{board.title}</h1>
+          </div>
+          <button
+            onClick={() => setShowColumnsManager(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 text-foreground rounded-md transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            {t('boardSettings')}
+          </button>
         </div>
       </header>
 
