@@ -29,11 +29,14 @@ interface Project {
 
 export default function TeamPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedProject, setSelectedProject] = useState<string>('')
   const [members, setMembers] = useState<Array<{ id: string; role: string; user: TeamMember }>>([])
   const [loading, setLoading] = useState(true)
   const [showAddMember, setShowAddMember] = useState(false)
+  const [showEditUser, setShowEditUser] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<any>(null)
   const [newMemberEmail, setNewMemberEmail] = useState('')
   const [newMemberRole, setNewMemberRole] = useState('member')
 
