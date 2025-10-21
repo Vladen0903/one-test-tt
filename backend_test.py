@@ -35,6 +35,10 @@ class TTManagerAPITester:
         self.event_ids = []
         self.comment_ids = []
         self.member_ids = []
+        # Phase 3 test data
+        self.release_ids = []
+        self.sprint_ids = []
+        self.label_ids = []
         
     def log(self, message, level="INFO"):
         """Log messages with timestamp"""
