@@ -196,6 +196,18 @@ model ReleaseBoard {
   @@map("release_boards")
 }
 
+model Tag {
+  id        String   @id @default(uuid())
+  teamId    String   @map("team_id")
+  name      String
+  color     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("tags")
+}
+
 model Task {
   id           String    @id @default(uuid())
   projectId    String    @map("project_id")
