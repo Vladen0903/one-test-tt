@@ -8,19 +8,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  avatarUrl String?  @map("avatar_url")
-  jobTitle  String?  @map("job_title")
-  phone     String?
-  telegram  String?
-  language  String   @default("en") // en, ru, uk
-  role      String   @default("user") // user, admin, director
-  settings  String?  @default("{}")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  password           String
+  name               String
+  avatarUrl          String?  @map("avatar_url")
+  jobTitle           String?  @map("job_title")
+  phone              String?
+  telegram           String?
+  language           String   @default("en") // en, ru, uk
+  role               String   @default("user") // user, admin, director
+  accessibleSections String?  @default("[]") @map("accessible_sections") // JSON array of accessible sections
+  assignedBy         String?  @map("assigned_by") // Who created/assigned this user
+  settings           String?  @default("{}")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
 
   teamMembers     TeamMember[]
   projectMembers  ProjectMember[]
