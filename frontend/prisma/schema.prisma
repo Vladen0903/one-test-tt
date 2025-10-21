@@ -14,8 +14,10 @@ model User {
   name      String
   avatarUrl String?  @map("avatar_url")
   jobTitle  String?  @map("job_title")
+  phone     String?
+  telegram  String?
   language  String   @default("en") // en, ru, uk
-  role      String   @default("user") // user, admin, viewer
+  role      String   @default("user") // user, admin, director
   settings  String?  @default("{}")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
