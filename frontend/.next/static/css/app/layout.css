@@ -618,6 +618,9 @@ video {
 .mt-1 {
   margin-top: 0.25rem;
 }
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
@@ -660,6 +663,9 @@ video {
 .min-h-screen {
   min-height: 100vh;
 }
+.min-h-\[calc\(100vh-200px\)\] {
+  min-height: calc(100vh - 200px);
+}
 .w-10 {
   width: 2.5rem;
 }
@@ -684,6 +690,9 @@ video {
 .w-8 {
   width: 2rem;
 }
+.w-80 {
+  width: 20rem;
+}
 .min-w-0 {
   min-width: 0px;
 }
@@ -692,6 +701,9 @@ video {
 }
 .flex-1 {
   flex: 1 1 0%;
+}
+.flex-shrink-0 {
+  flex-shrink: 0;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -741,6 +753,14 @@ video {
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.overflow-x-auto {
+  overflow-x: auto;
+}
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -769,6 +789,9 @@ video {
 }
 .border-t {
   border-top-width: 1px;
+}
+.border-dashed {
+  border-style: dashed;
 }
 .border-border {
   --tw-border-opacity: 1;
@@ -807,6 +830,16 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(22 25 28 / var(--tw-bg-opacity));
 }
+.bg-destructive\/20 {
+  background-color: rgb(239 68 68 / 0.2);
+}
+.bg-muted {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 25 28 / var(--tw-bg-opacity));
+}
+.bg-orange-500\/20 {
+  background-color: rgb(249 115 22 / 0.2);
+}
 .p-4 {
   padding: 1rem;
 }
@@ -815,6 +848,9 @@ video {
 }
 .p-8 {
   padding: 2rem;
+}
+.p-3 {
+  padding: 0.75rem;
 }
 .px-2 {
   padding-left: 0.5rem;
@@ -859,6 +895,10 @@ video {
 .py-20 {
   padding-top: 5rem;
   padding-bottom: 5rem;
+}
+.py-1\.5 {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
 }
 .text-center {
   text-align: center;
@@ -922,6 +962,10 @@ video {
 .text-secondary-foreground {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.text-orange-500 {
+  --tw-text-opacity: 1;
+  color: rgb(249 115 22 / var(--tw-text-opacity));
 }
 .shadow-lg {
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
