@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build TT-Manager - a comprehensive project management application with Kanban boards, backlog, sprints, and task management features"
+user_problem_statement: "Finalize TT-Manager v2.0 - Complete 14-point requirements including: PostgreSQL migration, multilingual support, board customization, enhanced team management with user creation, release management, calendar improvements, work without projects, advanced permissions (Director role), and comprehensive user profile management"
 
 backend:
   - task: "Sprint CRUD APIs"
