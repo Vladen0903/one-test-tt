@@ -89,6 +89,22 @@ export const translations = {
     profile: 'Profile',
     accountSettings: 'Account Settings',
     
+    // Messages
+    noTeamsYet: 'No teams yet',
+    noProjectsYet: 'No projects yet',
+    createFirstTeam: 'Create your first team',
+    createFirstProject: 'Create your first project',
+    
+    // Actions
+    viewProject: 'View Project',
+    viewBoard: 'View Board',
+    
+    // Boards
+    board: 'Board',
+    boards: 'Boards',
+    createBoard: 'Create Board',
+    boardName: 'Board Name',
+    
     // Priority levels
     lowest: 'Lowest',
     low: 'Low',
