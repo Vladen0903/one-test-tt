@@ -13,21 +13,75 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') as Language
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru' || savedLanguage === 'uk')) {
-      setLanguageState(savedLanguage)
+    // Fetch user's language from server
+    const fetchUserLanguage = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (res.ok) {
+          const data = await res.json()
+          if (data.user && data.user.language) {
+            setLanguageState(data.user.language as Language)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch language:', error)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchUserLanguage()
   }, [])
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang)
-    localStorage.setItem('language', lang)
+  const setLanguage = async (lang: Language) => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      setLanguageState(lang)
+      return
+    }
+
+    try {
+      const res = await fetch('/api/user/language', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ language: lang }),
+      })
+
+      if (res.ok) {
+        setLanguageState(lang)
+        // Update user in localStorage
+        const userData = localStorage.getItem('user')
+        if (userData) {
+          const user = JSON.parse(userData)
+          user.language = lang
+          localStorage.setItem('user', JSON.stringify(user))
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update language:', error)
+    }
   }
 
   const t = (key: TranslationKey): string => {
     return translations[language][key] || key
+  }
+
+  if (loading) {
+    return <div>{children}</div>
   }
 
   return (
