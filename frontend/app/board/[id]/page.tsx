@@ -44,9 +44,7 @@ export default function BoardPage() {
   const [loading, setLoading] = useState(true)
   const [showCreateTask, setShowCreateTask] = useState<string | null>(null)
   const [newTask, setNewTask] = useState({ title: '', description: '' })
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [editingTask, setEditingTask] = useState<any>(null)
-  const [projectMembers, setProjectMembers] = useState<User[]>([])
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
