@@ -172,79 +172,8 @@ export default function BoardPage() {
     }
   }
 
-  const handleTaskClick = async (taskId: string) => {
-    const token = localStorage.getItem('token')
-    if (!token) return
-
-    try {
-      const res = await fetch(`/api/tasks/${taskId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setSelectedTask(data.task)
-        setEditingTask({
-          title: data.task.title,
-          description: data.task.description || '',
-          priority: data.task.priority,
-          dueDate: data.task.dueDate ? new Date(data.task.dueDate).toISOString().split('T')[0] : '',
-          assigneeId: data.task.assignee?.id || '',
-        })
-      }
-    } catch (error) {
-      console.error('Failed to fetch task:', error)
-    }
-  }
-
-  const handleUpdateTask = async () => {
-    if (!selectedTask) return
-    const token = localStorage.getItem('token')
-    if (!token) return
-
-    try {
-      const res = await fetch(`/api/tasks/${selectedTask.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: editingTask.title,
-          description: editingTask.description,
-          priority: editingTask.priority,
-          dueDate: editingTask.dueDate || null,
-          assigneeId: editingTask.assigneeId || null,
-        }),
-      })
-
-      if (res.ok) {
-        setSelectedTask(null)
-        setEditingTask(null)
-        fetchData()
-      }
-    } catch (error) {
-      console.error('Failed to update task:', error)
-    }
-  }
-
-  const handleDeleteTask = async () => {
-    if (!selectedTask || !confirm('Delete this task?')) return
-    const token = localStorage.getItem('token')
-    if (!token) return
-
-    try {
-      const res = await fetch(`/api/tasks/${selectedTask.id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-
-      if (res.ok) {
-        setSelectedTask(null)
-        fetchData()
-      }
-    } catch (error) {
-      console.error('Failed to delete task:', error)
-    }
+  const handleTaskClick = (taskId: string) => {
+    setSelectedTaskId(taskId)
   }
 
   if (loading) {
