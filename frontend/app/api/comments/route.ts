@@ -72,19 +72,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
 
-    // Check project access
-    const projectMember = await prisma.projectMember.findFirst({
-      where: {
-        projectId: task.projectId,
-        userId: user.id,
-      },
-    })
+    // Check project access if task has projectId
+    if (task.projectId) {
+      const projectMember = await prisma.projectMember.findFirst({
+        where: {
+          projectId: task.projectId,
+          userId: user.id,
+        },
+      })
 
-    if (!projectMember) {
-      return NextResponse.json(
-        { error: 'No access to this project' },
-        { status: 403 }
-      )
+      if (!projectMember) {
+        return NextResponse.json(
+          { error: 'No access to this project' },
+          { status: 403 }
+        )
+      }
     }
 
     const comment = await prisma.comment.create({
