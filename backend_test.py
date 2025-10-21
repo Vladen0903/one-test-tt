@@ -1203,33 +1203,32 @@ class TTManagerAPITester:
             self.log("❌ Task setup failed", "ERROR")
             return False
         
-        # Main tests
+        # Setup multiple users for Phase 3 testing
+        if not self.test_multi_user_setup():
+            self.log("❌ Multi-user setup failed", "ERROR")
+            return False
+        
+        # Main Phase 3 tests
         tests_passed = 0
-        total_tests = 4
+        total_tests = 3
         
-        if self.test_sprint_apis():
+        if self.test_releases_crud_apis():
             tests_passed += 1
-            self.log("✅ Sprint APIs tests PASSED")
+            self.log("✅ Releases CRUD APIs tests PASSED")
         else:
-            self.log("❌ Sprint APIs tests FAILED", "ERROR")
+            self.log("❌ Releases CRUD APIs tests FAILED", "ERROR")
         
-        if self.test_labels_apis():
+        if self.test_gantt_data_api():
             tests_passed += 1
-            self.log("✅ Labels APIs tests PASSED")
+            self.log("✅ Gantt Data API tests PASSED")
         else:
-            self.log("❌ Labels APIs tests FAILED", "ERROR")
+            self.log("❌ Gantt Data API tests FAILED", "ERROR")
         
-        if self.test_enhanced_task_apis():
+        if self.test_enhanced_project_members_api():
             tests_passed += 1
-            self.log("✅ Enhanced Task APIs tests PASSED")
+            self.log("✅ Enhanced Project Members API tests PASSED")
         else:
-            self.log("❌ Enhanced Task APIs tests FAILED", "ERROR")
-        
-        if self.test_error_cases():
-            tests_passed += 1
-            self.log("✅ Error handling tests PASSED")
-        else:
-            self.log("❌ Error handling tests FAILED", "ERROR")
+            self.log("❌ Enhanced Project Members API tests FAILED", "ERROR")
         
         # Cleanup
         self.cleanup()
