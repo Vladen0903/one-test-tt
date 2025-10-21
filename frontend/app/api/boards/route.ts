@@ -21,23 +21,52 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const projectId = searchParams.get('projectId')
 
-    if (!projectId) {
-      return NextResponse.json({ error: 'Project ID required' }, { status: 400 })
+    if (projectId) {
+      // Get boards for specific project
+      const boards = await prisma.board.findMany({
+        where: { projectId },
+        include: {
+          columns: {
+            orderBy: { position: 'asc' },
+          },
+          _count: {
+            select: { tasks: true },
+          },
+        },
+      })
+      return NextResponse.json({ boards })
+    } else {
+      // Get all boards user has access to
+      const projects = await prisma.project.findMany({
+        where: {
+          members: {
+            some: {
+              userId: user.id,
+            },
+          },
+        },
+        select: { id: true },
+      })
+
+      const projectIds = projects.map((p) => p.id)
+
+      const boards = await prisma.board.findMany({
+        where: {
+          projectId: { in: projectIds },
+        },
+        include: {
+          project: {
+            select: { id: true, name: true, key: true },
+          },
+          _count: {
+            select: { tasks: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      })
+
+      return NextResponse.json({ boards })
     }
-
-    const boards = await prisma.board.findMany({
-      where: { projectId },
-      include: {
-        columns: {
-          orderBy: { position: 'asc' },
-        },
-        _count: {
-          select: { tasks: true },
-        },
-      },
-    })
-
-    return NextResponse.json({ boards })
   } catch (error) {
     console.error('Get boards error:', error)
     return NextResponse.json(
