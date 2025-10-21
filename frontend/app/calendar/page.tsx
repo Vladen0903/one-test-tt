@@ -7,6 +7,7 @@ import {
   ArrowLeft, Plus, ChevronLeft, ChevronRight, Calendar as CalendarIcon,
   Clock, MapPin, Users, X, Video, Phone, Flag, Edit, Trash2, Box
 } from 'lucide-react'
+import DayTasksModal from '@/components/DayTasksModal'
 
 interface CalendarEvent {
   id: string
