@@ -291,8 +291,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced Task Modal - Test all fields, edit mode, and delete functionality"
-    - "Backlog functionality - Test sprint creation, start/complete, and task filtering"
+    - "Calendar Events CRUD APIs - Test create, read, update, delete operations, date filtering, attendees management"
+    - "Comments APIs - Test comment creation, editing, deletion, task association, author-only permissions"
+    - "Project Members APIs - Test add/remove members, role updates, permission checks"
+    - "Calendar Page UI - Test event creation, month navigation, event display, filtering"
+    - "Team Management Page - Test member list, add/remove, role display"
+    - "Comments in Task Modal - Test adding comments to tasks"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
