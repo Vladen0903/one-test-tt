@@ -1134,9 +1134,15 @@ class TTManagerAPITester:
         self.log("✅ User 3 added to project as viewer")
         
         # Verify User 3 is also in team
-        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        response = self.make_request("GET", "/teams")
         if response and response.status_code == 200:
-            team_members = response.json().get("members", [])
+            teams = response.json().get("teams", [])
+            team_members = []
+            for team in teams:
+                if team.get("id") == self.team_id:
+                    team_members = team.get("members", [])
+                    break
+            
             user3_in_team = any(member.get("user", {}).get("id") == self.user3_id for member in team_members)
             if user3_in_team:
                 self.log("✅ User 3 also automatically added to team")
