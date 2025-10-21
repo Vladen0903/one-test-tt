@@ -46,6 +46,7 @@ interface Project {
 
 export default function DashboardPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [user, setUser] = useState<User | null>(null)
   const [teams, setTeams] = useState<Team[]>([])
   const [projects, setProjects] = useState<Project[]>([])
