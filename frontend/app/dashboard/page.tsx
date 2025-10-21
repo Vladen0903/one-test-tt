@@ -262,10 +262,7 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="flex-1 ml-[280px]">
-        <header className="bg-card border-b border-border px-8 py-4">
-          <h2 className="text-2xl font-bold">{t('dashboard')}</h2>
-          <p className="text-muted-foreground">Welcome back, {user?.name}!</p>
-        </header>
+        <Header user={user} />
 
         <div className="p-8">
           {/* Teams Section */}
