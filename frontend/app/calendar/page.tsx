@@ -28,6 +28,20 @@ interface CalendarEvent {
   team?: { id: string; name: string }
 }
 
+interface Task {
+  id: string
+  title: string
+  dueDate: string
+  priority: string
+}
+
+interface Release {
+  id: string
+  name: string
+  releaseDate: string
+  status: string
+}
+
 interface Project {
   id: string
   name: string
@@ -39,6 +53,8 @@ export default function CalendarPage() {
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [releases, setReleases] = useState<Release[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedProject, setSelectedProject] = useState<string>('all')
   const [loading, setLoading] = useState(true)
