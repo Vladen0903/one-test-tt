@@ -56,10 +56,11 @@ model Team {
 }
 
 model TeamMember {
-  id     String @id @default(uuid())
-  teamId String @map("team_id")
-  userId String @map("user_id")
-  role   String @default("member") // owner, admin, member, viewer
+  id       String  @id @default(uuid())
+  teamId   String  @map("team_id")
+  userId   String  @map("user_id")
+  role     String  @default("member") // owner, admin, member, viewer
+  position String? // Job position in company
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
