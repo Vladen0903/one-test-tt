@@ -16,6 +16,7 @@ import {
   Plus,
   LogOut,
 } from 'lucide-react'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface User {
   id: string
