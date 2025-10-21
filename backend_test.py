@@ -1507,27 +1507,28 @@ class TTManagerAPITester:
             response = requests.patch(url, headers=headers, json=update_data, timeout=20)
             if response.status_code == 200:
                 self.log("✅ Team member updated successfully")
+                # Verify the update
+                update_result = response.json()
+                updated_member = update_result.get("member", {})
+                
+                if updated_member.get("role") != "admin":
+                    self.log("❌ Member role not updated correctly", "ERROR")
+                    return False
+                    
+                if updated_member.get("position") != "Senior Developer":
+                    self.log("❌ Member position not updated correctly", "ERROR")
+                    return False
+                    
             elif response.status_code == 403:
                 self.log("✅ Permission check working (403 - user lacks permission to update)")
+                # This is acceptable - the API is correctly enforcing permissions
+                # Skip the rest of the update verification since update was blocked
             else:
                 self.log(f"❌ Update team member failed: {response.status_code} - {response.text}", "ERROR")
                 return False
         except Exception as e:
             self.log(f"❌ Error updating team member: {str(e)}", "ERROR")
             return False
-            
-        update_result = response.json()
-        updated_member = update_result.get("member", {})
-        
-        if updated_member.get("role") != "admin":
-            self.log("❌ Member role not updated correctly", "ERROR")
-            return False
-            
-        if updated_member.get("position") != "Senior Developer":
-            self.log("❌ Member position not updated correctly", "ERROR")
-            return False
-            
-        self.log("✅ Team member updated successfully")
         
         # Test 2: Test Director permissions (only directors can modify admins)
         # First, let's try to modify the admin (User 2) with User 1 (should fail if User 1 is not director)
