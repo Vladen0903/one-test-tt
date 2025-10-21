@@ -78,6 +78,7 @@ model Project {
   releases Release[]
   tasks   Task[]
   labels  Label[]
+  calendarEvents CalendarEvent[]
 
   @@unique([teamId, key])
   @@map("projects")
