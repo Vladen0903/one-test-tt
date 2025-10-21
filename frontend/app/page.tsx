@@ -26,23 +26,32 @@ export default function LoginPage() {
         ? { email: formData.email, password: formData.password }
         : formData
 
+      console.log('Submitting to:', endpoint, body)
+
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
 
+      console.log('Response status:', res.status)
       const data = await res.json()
+      console.log('Response data:', data)
 
       if (!res.ok) {
         throw new Error(data.error || 'Authentication failed')
+      }
+
+      if (!data.token || !data.user) {
+        throw new Error('Invalid response from server')
       }
 
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
       router.push('/dashboard')
     } catch (err: any) {
-      setError(err.message)
+      console.error('Auth error:', err)
+      setError(err.message || 'An error occurred')
     } finally {
       setLoading(false)
     }
