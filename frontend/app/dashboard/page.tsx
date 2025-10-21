@@ -194,6 +194,13 @@ export default function DashboardPage() {
             <span>Projects</span>
           </Link>
           <Link
+            href="/boards"
+            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
+          >
+            <Layout className="w-5 h-5" />
+            <span>Boards</span>
+          </Link>
+          <Link
             href="/backlog"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
