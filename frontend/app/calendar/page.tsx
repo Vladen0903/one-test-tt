@@ -269,9 +269,9 @@ export default function CalendarPage() {
   }
 
   const getEventsForDay = (date: Date | null) => {
-    if (!date) return []
+    if (!date) return { events: [], tasks: [], releases: [] }
     
-    return events.filter((event) => {
+    const dayEvents = events.filter((event) => {
       const eventStart = new Date(event.startTime)
       return (
         eventStart.getDate() === date.getDate() &&
@@ -279,6 +279,26 @@ export default function CalendarPage() {
         eventStart.getFullYear() === date.getFullYear()
       )
     })
+
+    const dayTasks = tasks.filter((task) => {
+      const taskDate = new Date(task.dueDate)
+      return (
+        taskDate.getDate() === date.getDate() &&
+        taskDate.getMonth() === date.getMonth() &&
+        taskDate.getFullYear() === date.getFullYear()
+      )
+    })
+
+    const dayReleases = releases.filter((release) => {
+      const releaseDate = new Date(release.releaseDate)
+      return (
+        releaseDate.getDate() === date.getDate() &&
+        releaseDate.getMonth() === date.getMonth() &&
+        releaseDate.getFullYear() === date.getFullYear()
+      )
+    })
+
+    return { events: dayEvents, tasks: dayTasks, releases: dayReleases }
   }
 
   const monthNames = [
