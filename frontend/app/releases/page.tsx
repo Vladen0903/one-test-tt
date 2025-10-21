@@ -410,7 +410,9 @@ export default function ReleasesPage() {
       {showShareModal && selectedReleaseId && (
         <ShareReleaseModal
           releaseId={selectedReleaseId}
-          onClose={() => {
+          projectId={selectedProject}
+          onClose={() => setShowShareModal(false)}
+          onUpdate={() => {
             setShowShareModal(false)
             setSelectedReleaseId(null)
             fetchReleases()
