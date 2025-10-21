@@ -201,6 +201,13 @@ export default function DashboardPage() {
             <span>Backlog</span>
           </Link>
           <Link
+            href="/calendar"
+            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
+          >
+            <Calendar className="w-5 h-5" />
+            <span>Calendar</span>
+          </Link>
+          <Link
             href="/gantt"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
