@@ -10,9 +10,11 @@ const updateTaskSchema = z.object({
   priority: z.enum(['lowest', 'low', 'medium', 'high', 'critical']).optional(),
   status: z.string().optional(),
   dueDate: z.string().optional().nullable(),
+  startDate: z.string().optional().nullable(),
   assigneeId: z.string().optional().nullable(),
   position: z.number().optional(),
   sprintId: z.string().optional().nullable(),
+  releaseId: z.string().optional().nullable(),
   storyPoints: z.number().optional().nullable(),
   labels: z.array(z.string()).optional(),
 })
