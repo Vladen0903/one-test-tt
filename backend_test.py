@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-TT-Manager Backend API Testing Suite - Phase 3 Final
-Tests Gantt Data API, Releases CRUD APIs, and Enhanced Project Members API
+TT-Manager Backend API Testing Suite - v2.0 New APIs
+Tests: Boards API (work without projects), Board Settings API, Team Members Management API,
+Team Member Update API, Tasks API Enhanced, Calendar Day API
 """
 
 import requests
@@ -9,9 +10,10 @@ import json
 import sys
 from datetime import datetime, timedelta
 import uuid
+import os
 
-# Configuration
-BASE_URL = "http://localhost:3000/api"
+# Configuration - Use environment variable for backend URL
+BASE_URL = os.environ.get('base_url', 'https://demobackend.emergentagent.com') + "/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class TTManagerAPITester:
