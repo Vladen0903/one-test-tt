@@ -29,11 +29,8 @@ export async function GET(req: NextRequest) {
     const boardId = searchParams.get('boardId')
     const columnId = searchParams.get('columnId')
 
-    if (!projectId) {
-      return NextResponse.json({ error: 'Project ID required' }, { status: 400 })
-    }
-
-    const where: any = { projectId }
+    const where: any = {}
+    if (projectId) where.projectId = projectId
     if (boardId) where.boardId = boardId
     if (columnId) where.columnId = columnId
 
