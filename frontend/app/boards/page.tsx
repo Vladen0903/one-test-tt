@@ -95,17 +95,30 @@ export default function BoardsPage() {
     if (!token) return
 
     try {
+      const payload: any = {
+        title: newBoard.title,
+      }
+
+      if (newBoard.workWithoutProject) {
+        // Personal board or team board without project
+        if (newBoard.teamId) {
+          payload.teamId = newBoard.teamId
+        }
+      } else if (newBoard.projectId) {
+        payload.projectId = newBoard.projectId
+      }
+
       const res = await fetch('/api/boards', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newBoard),
+        body: JSON.stringify(payload),
       })
 
       if (res.ok) {
-        setNewBoard({ name: '', description: '', projectId: projects[0]?.id || '' })
+        setNewBoard({ title: '', projectId: '', teamId: teams[0]?.id || '', workWithoutProject: false })
         setShowCreateModal(false)
         fetchData()
       }
