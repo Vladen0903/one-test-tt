@@ -348,9 +348,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Calendar Page UI - Test event creation, month navigation, event display, filtering"
-    - "Team Management Page - Test member list, add/remove, role display"
-    - "Comments in Task Modal - Test adding comments to tasks"
+    - "Gantt Data API - Test task filtering by dates, field inclusion, sorting"
+    - "Releases CRUD APIs - Test all CRUD operations and status values"
+    - "Enhanced Project Members API - Test critical bug fix for team addition"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
