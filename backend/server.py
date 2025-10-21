@@ -494,7 +494,7 @@ async def get_cards(list_id: str, current_user: User = Depends(get_current_user)
     
     return cards
 
-@api_router.get("/boards/{board_id}/cards", response_model=List[Card])
+@api_router.get("/boards/{board_id}/cards", response_model=ListType[Card])
 async def get_all_board_cards(board_id: str, current_user: User = Depends(get_current_user)):
     # Check board access
     board = await db.boards.find_one({"id": board_id}, {"_id": 0})
