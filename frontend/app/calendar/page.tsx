@@ -781,10 +781,11 @@ export default function CalendarPage() {
       )}
 
       {/* Day Tasks Modal */}
-      {showDayTasksModal && (
+      {showDayTasksModal && selectedDate && (
         <DayTasksModal
-          date={selectedDate}
-          onClose={() => {
+          date={new Date(selectedDate)}
+          onClose={() => setShowDayTasksModal(false)}
+          onUpdate={() => {
             setShowDayTasksModal(false)
             fetchData()
           }}
