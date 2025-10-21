@@ -658,11 +658,14 @@ class TTManagerPhase2Tester:
         
         # Test 1: Unauthorized access (no token)
         self.log("Testing Unauthorized Access...")
-        response = self.make_request("GET", "/calendar", auth_required=False)
+        response = self.make_request("GET", "/calendar", auth_token=None, auth_required=False)
         if response and response.status_code == 401:
             self.log("✅ Unauthorized access properly rejected")
+        elif response:
+            self.log(f"❌ Should reject unauthorized access: {response.status_code} - {response.text[:100]}", "ERROR")
+            return False
         else:
-            self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'}", "ERROR")
+            self.log("❌ No response received for unauthorized access test", "ERROR")
             return False
         
         # Test 2: Invalid event ID
