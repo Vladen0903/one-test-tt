@@ -335,7 +335,9 @@ export default function BoardPage() {
       {showColumnsManager && (
         <ColumnsManager
           boardId={params.id as string}
-          onClose={() => {
+          columns={columns}
+          onClose={() => setShowColumnsManager(false)}
+          onUpdate={() => {
             setShowColumnsManager(false)
             fetchData()
           }}
