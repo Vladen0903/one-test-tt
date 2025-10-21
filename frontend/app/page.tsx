@@ -77,7 +77,10 @@ export default function LoginPage() {
         <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
           <div className="flex gap-2 mb-6">
             <button
-              onClick={() => setIsLogin(true)}
+              onClick={() => {
+                setIsLogin(true)
+                setError('')
+              }}
               className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
                 isLogin
                   ? 'bg-primary text-primary-foreground'
@@ -87,7 +90,10 @@ export default function LoginPage() {
               Login
             </button>
             <button
-              onClick={() => setIsLogin(false)}
+              onClick={() => {
+                setIsLogin(false)
+                setError('')
+              }}
               className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
                 !isLogin
                   ? 'bg-primary text-primary-foreground'
