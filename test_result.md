@@ -340,10 +340,106 @@ frontend:
         agent: "main"
         comment: "Added comment creation form to TaskModal. Users can now add comments to tasks with auto-refresh after posting. Comments display with author info and timestamps."
 
+  - task: "PostgreSQL Migration & Schema Updates"
+    implemented: true
+    working: true
+    file: "/app/frontend/prisma/schema.prisma"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Successfully migrated from SQLite to PostgreSQL. Updated schema to support: optional projectId in Board and Task, assignedBy tracking, accessibleSections for users, position in TeamMember, TaskTag model. All migrations applied successfully."
+
+  - task: "Boards API - Work Without Projects"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/boards/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated boards API to support creating boards without projectId. Added support for teamId-based and personal boards. GET endpoint now returns all accessible boards including project, team, and personal boards."
+
+  - task: "Board Settings API"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/boards/[id]/settings/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created new board settings endpoint with GET and PATCH methods. Supports board customization with proper admin/creator permissions. Handles project-based, team-based, and personal boards."
+
+  - task: "Team Members Management API with User Creation"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/teams/[id]/members/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created comprehensive team members API. POST endpoint supports adding existing users OR creating new users by admin. Includes email, password, role, position, jobTitle, accessibleSections, and automatic project assignment."
+
+  - task: "Team Member Update API - Advanced Permissions"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/teams/[id]/members/[memberId]/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created member update API with PATCH and DELETE methods. Implements Director role permissions (only directors can modify admins), accessible sections management, and project memberships sync."
+
+  - task: "Tasks API - Enhanced with assignedBy tracking"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/tasks/route.ts, /app/frontend/app/api/tasks/[id]/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated tasks API to support optional projectId for personal tasks. Added assignedBy field to track who assigned tasks. Added startDate support. Updated PATCH endpoint to track assignedBy when assignee changes."
+
+  - task: "Calendar Day API"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/api/calendar/day/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created new calendar day endpoint that returns all events, tasks, and releases for a specific day. Supports date filtering with proper access control (user's teams and projects)."
+
+  - task: "Multilingual Support - Complete Translations"
+    implemented: true
+    working: true
+    file: "/app/frontend/lib/i18n.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added comprehensive translations for all new features in EN, RU, UK. Added 40+ new translation keys including: phone, telegram, position, director, boardSettings, releaseStatus, dayTasks, requestPassword, workWithoutProject, etc."
+
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 4
+  version: "2.0"
+  test_sequence: 5
   run_ui: false
 
 test_plan:
