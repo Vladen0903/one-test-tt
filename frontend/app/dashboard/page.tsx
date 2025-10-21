@@ -7,6 +7,7 @@ import Link from 'next/link'
 import {
   LayoutDashboard,
   FolderKanban,
+  Layout,
   ListTodo,
   Calendar,
   BarChart3,
