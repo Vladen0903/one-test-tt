@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Calendar, Box, CheckCircle, Clock, AlertCircle, X } from 'lucide-react'
+import { ArrowLeft, Plus, Calendar, Box, CheckCircle, Clock, AlertCircle, X, Share2 } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
+import ShareReleaseModal from '@/components/ShareReleaseModal'
 
 interface Release {
   id: string
