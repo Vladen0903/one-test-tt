@@ -12,8 +12,8 @@ from datetime import datetime, timedelta
 import uuid
 import os
 
-# Configuration - Use environment variable for backend URL
-BASE_URL = os.environ.get('base_url', 'https://demobackend.emergentagent.com') + "/api"
+# Configuration - Use local backend URL
+BASE_URL = "http://localhost:3000/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class TTManagerAPITester:
