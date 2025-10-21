@@ -572,18 +572,21 @@ class TTManagerAPITester:
         
         # Test 1: Unauthorized Access (no token)
         self.log("Testing Unauthorized Access...")
-        old_token = self.auth_token
-        self.auth_token = None
         
-        response = self.make_request("GET", f"/sprints?projectId={self.project_id}", auth_required=False)
-        if response and response.status_code == 401:
-            self.log("✅ Unauthorized access properly rejected")
-        else:
-            self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'}", "ERROR")
-            self.auth_token = old_token
+        # Make request without any authorization header
+        url = f"{self.base_url}/sprints?projectId={self.project_id}"
+        headers = {"Content-Type": "application/json"}
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            if response and response.status_code == 401:
+                self.log("✅ Unauthorized access properly rejected")
+            else:
+                self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'}", "ERROR")
+                return False
+        except Exception as e:
+            self.log(f"❌ Error testing unauthorized access: {str(e)}", "ERROR")
             return False
-            
-        self.auth_token = old_token
         
         # Test 2: Invalid Sprint ID
         self.log("Testing Invalid Sprint ID...")
