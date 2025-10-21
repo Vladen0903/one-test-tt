@@ -249,7 +249,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 # ============= USER MANAGEMENT (ADMIN ONLY) =============
 
-@api_router.get("/users", response_model=List[UserResponse])
+@api_router.get("/users", response_model=ListType[UserResponse])
 async def get_all_users(current_user: User = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0}).to_list(1000)
     return [
