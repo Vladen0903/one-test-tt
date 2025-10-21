@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
   ArrowLeft, Plus, ChevronLeft, ChevronRight, Calendar as CalendarIcon,
-  Clock, MapPin, Users, X, Video, Phone, Flag, Edit, Trash2
+  Clock, MapPin, Users, X, Video, Phone, Flag, Edit, Trash2, Box
 } from 'lucide-react'
 
 interface CalendarEvent {
