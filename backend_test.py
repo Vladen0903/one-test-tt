@@ -946,6 +946,9 @@ class TTManagerAPITester:
             else:
                 self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'}", "ERROR")
                 return False
+        except requests.exceptions.ConnectionError as e:
+            self.log(f"❌ Connection error testing unauthorized access: {str(e)}", "ERROR")
+            return False
         except Exception as e:
             self.log(f"❌ Error testing unauthorized access: {str(e)}", "ERROR")
             return False
