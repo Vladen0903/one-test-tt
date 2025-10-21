@@ -10,13 +10,13 @@ import {
   Layout,
   ListTodo,
   Calendar,
-  BarChart3,
   Users,
   Settings,
   Plus,
   LogOut,
 } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
+import Header from '@/components/Header'
 
 interface User {
   id: string
