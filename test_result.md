@@ -444,9 +444,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Gantt Data API - Test task filtering by dates, field inclusion, sorting"
-    - "Releases CRUD APIs - Test all CRUD operations and status values"
-    - "Enhanced Project Members API - Test critical bug fix for team addition"
+    - "Boards API - Work Without Projects - Test board creation without projectId, teamId support"
+    - "Board Settings API - Test GET/PATCH, admin permissions"
+    - "Team Members Management API - Test user creation by admin, role assignment, project linking"
+    - "Team Member Update API - Test Director permissions, accessible sections, project sync"
+    - "Tasks API Enhanced - Test assignedBy tracking, optional projectId"
+    - "Calendar Day API - Test date filtering, events/tasks/releases retrieval"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
