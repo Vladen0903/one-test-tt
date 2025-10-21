@@ -105,6 +105,25 @@ export const translations = {
     createBoard: 'Create Board',
     boardName: 'Board Name',
     
+    // Company/Team
+    company: 'Company',
+    myCompany: 'My Company',
+    companyMembers: 'Company Members',
+    addToCompany: 'Add to Company',
+    
+    // Users
+    users: 'Users',
+    permissions: 'Permissions',
+    editUser: 'Edit User',
+    selectProjects: 'Select Projects',
+    selectBoards: 'Select Boards',
+    accessRights: 'Access Rights',
+    
+    // Tasks
+    createdBy: 'Created by',
+    assignedTo: 'Assigned to',
+    selectUser: 'Select User',
+    
     // Priority levels
     lowest: 'Lowest',
     low: 'Low',
