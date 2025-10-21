@@ -109,9 +109,10 @@ model Board {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  project Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  columns Column[]
-  tasks   Task[]
+  project  Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  columns  Column[]
+  tasks    Task[]
+  releases ReleaseBoard[]
 
   @@map("boards")
 }
