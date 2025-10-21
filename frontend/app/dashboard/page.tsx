@@ -187,49 +187,49 @@ export default function DashboardPage() {
             className="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 text-primary"
           >
             <LayoutDashboard className="w-5 h-5" />
-            <span className="font-medium">Dashboard</span>
+            <span className="font-medium">{t('dashboard')}</span>
           </Link>
           <Link
             href="/projects"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <FolderKanban className="w-5 h-5" />
-            <span>Projects</span>
+            <span>{t('projects')}</span>
           </Link>
           <Link
             href="/boards"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <Layout className="w-5 h-5" />
-            <span>Boards</span>
+            <span>{t('boards')}</span>
           </Link>
           <Link
             href="/backlog"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <ListTodo className="w-5 h-5" />
-            <span>Backlog</span>
+            <span>{t('backlog')}</span>
           </Link>
           <Link
             href="/calendar"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <Calendar className="w-5 h-5" />
-            <span>Calendar</span>
+            <span>{t('calendar')}</span>
           </Link>
           <Link
             href="/gantt"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <BarChart3 className="w-5 h-5" />
-            <span>Gantt Chart</span>
+            <span>{t('gantt')}</span>
           </Link>
           <Link
             href="/releases"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <Calendar className="w-5 h-5" />
-            <span>Releases</span>
+            <span>{t('releases')}</span>
           </Link>
           <Link
             href="/team"
@@ -243,7 +243,7 @@ export default function DashboardPage() {
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary text-foreground"
           >
             <Settings className="w-5 h-5" />
-            <span>Settings</span>
+            <span>{t('settings')}</span>
           </Link>
         </nav>
 
