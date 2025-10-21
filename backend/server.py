@@ -75,7 +75,7 @@ class Board(BaseModel):
     title: str
     description: Optional[str] = None
     owner_id: str
-    members: List[str] = []  # User IDs
+    members: ListType[str] = []  # User IDs
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
