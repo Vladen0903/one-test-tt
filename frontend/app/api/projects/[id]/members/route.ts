@@ -118,6 +118,31 @@ export async function POST(
       )
     }
 
+    // Get project's team
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { teamId: true },
+    })
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    // Add user to team if not already a member
+    const existingTeamMember = await prisma.teamMember.findFirst({
+      where: { teamId: project.teamId, userId: userToAdd.id },
+    })
+
+    if (!existingTeamMember) {
+      await prisma.teamMember.create({
+        data: {
+          teamId: project.teamId,
+          userId: userToAdd.id,
+          role: 'member',
+        },
+      })
+    }
+
     // Add user to project
     const member = await prisma.projectMember.create({
       data: {
