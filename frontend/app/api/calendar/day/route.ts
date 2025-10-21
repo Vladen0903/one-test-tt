@@ -45,34 +45,40 @@ export async function GET(req: NextRequest) {
     // Get calendar events for this day
     const events = await prisma.calendarEvent.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            AND: [
-              { startTime: { gte: startDate } },
-              { startTime: { lte: endDate } },
+            OR: [
+              {
+                AND: [
+                  { startTime: { gte: startDate } },
+                  { startTime: { lte: endDate } },
+                ],
+              },
+              {
+                AND: [
+                  { endTime: { gte: startDate } },
+                  { endTime: { lte: endDate } },
+                ],
+              },
+              {
+                AND: [
+                  { startTime: { lte: startDate } },
+                  { endTime: { gte: endDate } },
+                ],
+              },
             ],
           },
           {
-            AND: [
-              { endTime: { gte: startDate } },
-              { endTime: { lte: endDate } },
+            OR: [
+              { createdBy: user.id },
+              { projectId: { in: projectIds } },
+              { teamId: { in: teamIds } },
+              {
+                attendees: {
+                  some: { userId: user.id },
+                },
+              },
             ],
-          },
-          {
-            AND: [
-              { startTime: { lte: startDate } },
-              { endTime: { gte: endDate } },
-            ],
-          },
-        ],
-        OR: [
-          { createdBy: user.id },
-          { projectId: { in: projectIds } },
-          { teamId: { in: teamIds } },
-          {
-            attendees: {
-              some: { userId: user.id },
-            },
           },
         ],
       },
