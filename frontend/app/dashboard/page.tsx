@@ -262,7 +262,7 @@ export default function DashboardPage() {
             className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-destructive/10 text-destructive text-sm"
           >
             <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <span>{t('logout')}</span>
           </button>
         </div>
       </aside>
