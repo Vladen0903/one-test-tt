@@ -278,7 +278,7 @@ export default function DashboardPage() {
           {/* Teams Section */}
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold">Teams</h3>
+              <h3 className="text-xl font-semibold">{t('myTeams')}</h3>
               <button
                 onClick={() => setShowCreateTeam(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-md transition-colors"
