@@ -192,8 +192,6 @@ export const translations = {
     update: 'Update',
     close: 'Close',
     open: 'Open',
-    shareRelease: 'Share Release',
-    tasks: 'tasks',
   },
   
   ru: {
