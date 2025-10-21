@@ -387,7 +387,7 @@ async def create_list(list_data: ListCreate, current_user: User = Depends(get_cu
     
     return new_list
 
-@api_router.get("/boards/{board_id}/lists", response_model=List[List])
+@api_router.get("/boards/{board_id}/lists", response_model=ListType[List])
 async def get_lists(board_id: str, current_user: User = Depends(get_current_user)):
     # Check board access
     board = await db.boards.find_one({"id": board_id}, {"_id": 0})
