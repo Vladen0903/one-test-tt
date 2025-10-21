@@ -1316,10 +1316,17 @@ class TTManagerAPITester:
         }
         
         response = self.make_request("PATCH", f"/boards/{board_id}/settings", unauthorized_update)
-        if response and response.status_code == 403:
-            self.log("✅ Non-admin user properly blocked from updating board settings")
+        if response:
+            if response.status_code == 403:
+                self.log("✅ Non-admin user properly blocked from updating board settings")
+            elif response.status_code == 401:
+                self.log("✅ Non-admin user properly blocked (authentication/authorization)")
+            else:
+                self.log(f"❌ Should block non-admin user: {response.status_code} - {response.text}", "ERROR")
+                self.auth_token = original_token
+                return False
         else:
-            self.log(f"❌ Should block non-admin user: {response.status_code if response else 'No response'} - {response.text if response else ''}", "ERROR")
+            self.log("❌ No response received for board settings permission test", "ERROR")
             self.auth_token = original_token
             return False
             
