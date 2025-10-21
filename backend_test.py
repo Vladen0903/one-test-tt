@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-TT-Manager Backend API Testing Suite
-Tests Sprint APIs, Labels APIs, and Enhanced Task APIs
+TT-Manager Backend API Testing Suite - Phase 2
+Tests Calendar Events APIs, Comments APIs, and Project Members APIs
 """
 
 import requests
