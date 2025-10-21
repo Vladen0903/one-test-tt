@@ -53,11 +53,14 @@ export default function BoardsPage() {
     }
 
     try {
-      const [projectsRes, boardsRes] = await Promise.all([
+      const [projectsRes, boardsRes, teamsRes] = await Promise.all([
         fetch('/api/projects', {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch('/api/boards', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/teams', {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ])
@@ -65,8 +68,13 @@ export default function BoardsPage() {
       if (projectsRes.ok) {
         const data = await projectsRes.json()
         setProjects(data.projects || [])
-        if (data.projects && data.projects.length > 0) {
-          setNewBoard((prev) => ({ ...prev, projectId: data.projects[0].id }))
+      }
+
+      if (teamsRes.ok) {
+        const data = await teamsRes.json()
+        setTeams(data.teams || [])
+        if (data.teams && data.teams.length > 0) {
+          setNewBoard((prev) => ({ ...prev, teamId: data.teams[0].id }))
         }
       }
 
