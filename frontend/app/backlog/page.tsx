@@ -241,9 +241,20 @@ export default function BacklogPage() {
                     {sprint.status}
                   </span>
                   {sprint.status === 'planned' && (
-                    <button className="flex items-center gap-2 px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm">
+                    <button 
+                      onClick={() => handleStartSprint(sprint.id)}
+                      className="flex items-center gap-2 px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
+                    >
                       <Play className="w-3 h-3" />
                       Start Sprint
+                    </button>
+                  )}
+                  {sprint.status === 'active' && (
+                    <button 
+                      onClick={() => handleCompleteSprint(sprint.id)}
+                      className="flex items-center gap-2 px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700"
+                    >
+                      Complete Sprint
                     </button>
                   )}
                 </div>
