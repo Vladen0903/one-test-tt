@@ -387,8 +387,6 @@ export const translations = {
     update: 'Обновить',
     close: 'Закрыть',
     open: 'Открыть',
-    shareRelease: 'Поделиться Релизом',
-    tasks: 'задачи',
   },
   
   uk: {
