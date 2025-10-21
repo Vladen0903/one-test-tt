@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, MoreVertical } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 interface Task {
   id: string
@@ -58,7 +58,6 @@ export default function BoardPage() {
         setBoard(boardData.board)
         setColumns(boardData.board.columns || [])
 
-        // Fetch tasks for each column
         const tasksByColumn: Record<string, Task[]> = {}
         for (const column of boardData.board.columns || []) {
           const tasksRes = await fetch(
@@ -112,59 +111,59 @@ export default function BoardPage() {
 
   if (loading) {
     return (
-      <div className=\"min-h-screen flex items-center justify-center bg-background\">
-        <div className=\"text-xl text-muted-foreground\">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-xl text-muted-foreground">Loading...</div>
       </div>
     )
   }
 
   if (!board) {
     return (
-      <div className=\"min-h-screen flex items-center justify-center bg-background\">
-        <div className=\"text-xl text-muted-foreground\">Board not found</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-xl text-muted-foreground">Board not found</div>
       </div>
     )
   }
 
   return (
-    <div className=\"min-h-screen bg-background\">
-      <header className=\"bg-card border-b border-border px-8 py-4 sticky top-0 z-10\">
-        <div className=\"flex items-center gap-4\">
+    <div className="min-h-screen bg-background">
+      <header className="bg-card border-b border-border px-8 py-4 sticky top-0 z-10">
+        <div className="flex items-center gap-4">
           <Link href={`/project/${board.projectId}`}>
-            <button className=\"flex items-center gap-2 text-muted-foreground hover:text-foreground\">
-              <ArrowLeft className=\"w-4 h-4\" />
+            <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="w-4 h-4" />
               Back to Project
             </button>
           </Link>
-          <h1 className=\"text-2xl font-bold\">{board.title}</h1>
+          <h1 className="text-2xl font-bold">{board.title}</h1>
         </div>
       </header>
 
-      <main className=\"p-6 overflow-x-auto\">
-        <div className=\"flex gap-4 min-h-[calc(100vh-200px)]\">
+      <main className="p-6 overflow-x-auto">
+        <div className="flex gap-4 min-h-[calc(100vh-200px)]">
           {columns.map((column) => (
-            <div key={column.id} className=\"flex-shrink-0 w-80\">
-              <div className=\"bg-card rounded-lg border border-border p-4\">
-                <div className=\"flex justify-between items-center mb-4\">
-                  <h3 className=\"font-semibold text-lg\">{column.title}</h3>
-                  <span className=\"text-xs text-muted-foreground\">
+            <div key={column.id} className="flex-shrink-0 w-80">
+              <div className="bg-card rounded-lg border border-border p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-semibold text-lg">{column.title}</h3>
+                  <span className="text-xs text-muted-foreground">
                     {tasks[column.id]?.length || 0}
                   </span>
                 </div>
 
-                <div className=\"space-y-2 mb-4\">
+                <div className="space-y-2 mb-4">
                   {(tasks[column.id] || []).map((task) => (
                     <div
                       key={task.id}
-                      className=\"bg-secondary p-3 rounded-lg border border-border hover:border-primary transition-colors cursor-pointer\"
+                      className="bg-secondary p-3 rounded-lg border border-border hover:border-primary transition-colors cursor-pointer"
                     >
-                      <h4 className=\"font-medium mb-1\">{task.title}</h4>
+                      <h4 className="font-medium mb-1">{task.title}</h4>
                       {task.description && (
-                        <p className=\"text-sm text-muted-foreground line-clamp-2 mb-2\">
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                           {task.description}
                         </p>
                       )}
-                      <div className=\"flex items-center justify-between text-xs text-muted-foreground\">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span className={`px-2 py-1 rounded ${
                           task.priority === 'critical' ? 'bg-destructive/20 text-destructive' :
                           task.priority === 'high' ? 'bg-orange-500/20 text-orange-500' :
@@ -172,7 +171,7 @@ export default function BoardPage() {
                         }`}>
                           {task.priority}
                         </span>
-                        <div className=\"flex gap-2\">
+                        <div className="flex gap-2">
                           {task._count.subtasks > 0 && (
                             <span>☑ {task._count.subtasks}</span>
                           )}
@@ -186,34 +185,34 @@ export default function BoardPage() {
                 </div>
 
                 {showCreateTask === column.id ? (
-                  <form onSubmit={(e) => handleCreateTask(e, column.id)} className=\"space-y-2\">
+                  <form onSubmit={(e) => handleCreateTask(e, column.id)} className="space-y-2">
                     <input
-                      type=\"text\"
+                      type="text"
                       value={newTask.title}
                       onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                      placeholder=\"Task title\"
-                      className=\"w-full px-3 py-2 bg-background border border-input rounded-md text-sm\"
+                      placeholder="Task title"
+                      className="w-full px-3 py-2 bg-background border border-input rounded-md text-sm"
                       required
                       autoFocus
                     />
                     <textarea
                       value={newTask.description}
                       onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                      placeholder=\"Description (optional)\"
-                      className=\"w-full px-3 py-2 bg-background border border-input rounded-md text-sm\"
+                      placeholder="Description (optional)"
+                      className="w-full px-3 py-2 bg-background border border-input rounded-md text-sm"
                       rows={2}
                     />
-                    <div className=\"flex gap-2\">
+                    <div className="flex gap-2">
                       <button
-                        type=\"submit\"
-                        className=\"px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-sm\"
+                        type="submit"
+                        className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-sm"
                       >
                         Add
                       </button>
                       <button
-                        type=\"button\"
+                        type="button"
                         onClick={() => setShowCreateTask(null)}
-                        className=\"px-3 py-1.5 bg-secondary text-foreground rounded-md text-sm\"
+                        className="px-3 py-1.5 bg-secondary text-foreground rounded-md text-sm"
                       >
                         Cancel
                       </button>
@@ -222,7 +221,7 @@ export default function BoardPage() {
                 ) : (
                   <button
                     onClick={() => setShowCreateTask(column.id)}
-                    className=\"w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md border border-dashed border-border transition-colors\"
+                    className="w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md border border-dashed border-border transition-colors"
                   >
                     + Add Task
                   </button>
