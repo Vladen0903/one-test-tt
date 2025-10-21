@@ -133,9 +133,9 @@ export async function PATCH(
     }
 
     // Check permissions: only admin, creator, or assignee can edit
-    const isCreator = existingTask.createdBy === user.id
+    const isCreator = existingTask.creatorId === user.id
     const isAssignee = existingTask.assigneeId === user.id
-    const isAdmin = user.role === 'admin' || existingTask.project.members.some(m => m.role === 'admin')
+    const isAdmin = user.role === 'admin' || (existingTask.project && existingTask.project.members.some(m => m.role === 'admin'))
 
     if (!isCreator && !isAssignee && !isAdmin) {
       return NextResponse.json(
