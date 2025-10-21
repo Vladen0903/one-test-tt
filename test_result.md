@@ -210,6 +210,51 @@ backend:
         agent: "testing"
         comment: "✅ CALENDAR SCHEMA TESTED SUCCESSFULLY: CalendarEvent and CalendarAttendee models working correctly through API testing. Event creation with attendees, status updates, and all relationships (User, Project, Team) functioning properly. Database operations for events and attendee management validated through comprehensive API tests."
 
+  - task: "Gantt Data API"
+    implemented: true
+    working: true
+    file: "/app/frontend/app/api/gantt/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Gantt Data API endpoint (GET /api/gantt) that returns tasks with dates for Gantt chart visualization. Filters tasks by startDate OR dueDate not null, includes assignee, sprint, epic, and dependencies data. Properly sorted by startDate ascending."
+      - working: true
+        agent: "testing"
+        comment: "✅ GANTT DATA API TESTED SUCCESSFULLY: API correctly filters and returns only tasks with dates (startDate OR dueDate not null), includes all required fields (assignee, sprint, epic, dependencies), properly sorted by startDate, authorization checks working (401 for unauthorized access), project access validation working. Tasks without dates correctly excluded from results."
+
+  - task: "Releases CRUD APIs"
+    implemented: true
+    working: true
+    file: "/app/frontend/app/api/releases/route.ts, /app/frontend/app/api/releases/[id]/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Releases CRUD APIs with GET (list releases for project), POST (create release with all status values), DELETE (delete release and unlink tasks). Supports all status values: planned, on_track, delayed, released. Includes proper project access validation."
+      - working: true
+        agent: "testing"
+        comment: "✅ RELEASES CRUD APIs TESTED SUCCESSFULLY: Created releases with all status values (planned, on_track, delayed, released), retrieved releases list properly sorted by releaseDate desc, verified all status values present, deleted releases successfully with task unlinking, project access authorization working correctly. All CRUD operations and data validation functioning as expected."
+
+  - task: "Enhanced Project Members API - Bug Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/app/api/projects/[id]/members/route.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "CRITICAL BUG FIX: Enhanced Project Members API to automatically add users to team when they are added to a project. Fixed the user sharing issue where users added to projects couldn't access the team. Now properly creates TeamMember record when adding ProjectMember."
+      - working: true
+        agent: "testing"
+        comment: "✅ CRITICAL BUG FIX VERIFIED: Enhanced Project Members API working correctly. When User2 added to project, automatically added to team as well. User2 can now access team list, project list, and project data immediately after being added. User3 also tested with viewer role - same automatic team addition working. Multi-user access control and role-based permissions functioning correctly. Bug fix successful!"
+
 frontend:
   - task: "Backlog page - Fixed task filtering"
     implemented: true
