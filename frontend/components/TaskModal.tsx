@@ -254,6 +254,53 @@ export default function TaskModal({ taskId, onClose, onUpdate }: TaskModalProps)
                 <MessageSquare className="w-5 h-5" />
                 Comments ({task.comments.length})
               </h3>
+              
+              {/* Add comment form */}
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  const token = localStorage.getItem('token')
+                  if (!token || !newComment.trim()) return
+
+                  try {
+                    const res = await fetch('/api/comments', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                      },
+                      body: JSON.stringify({
+                        taskId: task.id,
+                        body: newComment,
+                      }),
+                    })
+
+                    if (res.ok) {
+                      setNewComment('')
+                      await fetchTask()
+                    }
+                  } catch (error) {
+                    console.error('Failed to add comment:', error)
+                  }
+                }}
+                className="mb-4"
+              >
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="w-full px-3 py-2 bg-secondary border border-input rounded-md text-sm mb-2"
+                  rows={3}
+                />
+                <button
+                  type="submit"
+                  disabled={!newComment.trim()}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Add Comment
+                </button>
+              </form>
+
               <div className="space-y-4">
                 {task.comments.map((comment) => (
                   <div key={comment.id} className="bg-secondary p-4 rounded-lg">
@@ -273,6 +320,9 @@ export default function TaskModal({ taskId, onClose, onUpdate }: TaskModalProps)
                     </div>
                   </div>
                 ))}
+                {task.comments.length === 0 && (
+                  <div className="text-sm text-muted-foreground">No comments yet. Be the first to comment!</div>
+                )}
               </div>
             </div>
 
