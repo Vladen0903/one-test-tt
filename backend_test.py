@@ -905,8 +905,7 @@ class TTManagerAPITester:
         # Verify only tasks with dates are returned
         if len(gantt_tasks) != len(tasks_with_dates):
             self.log(f"❌ Expected {len(tasks_with_dates)} tasks in Gantt, got {len(gantt_tasks)}", "ERROR")
-            # Don't return False yet, let's see what we got
-            # return False
+            return False
             
         self.log(f"✅ Gantt API returned {len(gantt_tasks)} tasks (only tasks with dates)")
         
