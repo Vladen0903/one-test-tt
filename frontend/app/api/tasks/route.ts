@@ -90,19 +90,21 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const data = createTaskSchema.parse(body)
 
-    // Check project access
-    const projectMember = await prisma.projectMember.findFirst({
-      where: {
-        projectId: data.projectId,
-        userId: user.id,
-      },
-    })
+    // Check project access if projectId provided
+    if (data.projectId) {
+      const projectMember = await prisma.projectMember.findFirst({
+        where: {
+          projectId: data.projectId,
+          userId: user.id,
+        },
+      })
 
-    if (!projectMember) {
-      return NextResponse.json(
-        { error: 'No access to this project' },
-        { status: 403 }
-      )
+      if (!projectMember) {
+        return NextResponse.json(
+          { error: 'No access to this project' },
+          { status: 403 }
+        )
+      }
     }
 
     // Get max position for ordering
@@ -115,13 +117,16 @@ export async function POST(req: NextRequest) {
 
     const task = await prisma.task.create({
       data: {
-        projectId: data.projectId,
+        projectId: data.projectId || null,
         boardId: data.boardId || null,
         columnId: data.columnId || null,
         title: data.title,
         description: data.description,
         priority: data.priority,
+        assigneeId: data.assigneeId || null,
+        assignedBy: data.assigneeId ? user.id : null,
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
+        startDate: data.startDate ? new Date(data.startDate) : null,
         creatorId: user.id,
         position: (maxPosition?.position || 0) + 1000,
       },
@@ -131,6 +136,14 @@ export async function POST(req: NextRequest) {
             id: true,
             name: true,
             email: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
           },
         },
       },
