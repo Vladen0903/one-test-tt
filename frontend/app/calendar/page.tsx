@@ -431,7 +431,13 @@ export default function CalendarPage() {
               return (
                 <div
                   key={index}
-                  className={`min-h-[120px] p-2 border-r border-b border-border ${
+                  onClick={() => {
+                    if (date) {
+                      setSelectedDate(date.toISOString().split('T')[0])
+                      setShowDayTasksModal(true)
+                    }
+                  }}
+                  className={`min-h-[120px] p-2 border-r border-b border-border cursor-pointer hover:bg-secondary/50 transition-colors ${
                     !date ? 'bg-muted/20' : ''
                   } ${isToday ? 'bg-primary/5' : ''}`}
                 >
