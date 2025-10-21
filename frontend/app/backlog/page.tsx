@@ -132,6 +132,50 @@ export default function BacklogPage() {
     }
   }
 
+  const handleStartSprint = async (sprintId: string) => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    try {
+      const res = await fetch(`/api/sprints/${sprintId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ action: 'start' }),
+      })
+
+      if (res.ok) {
+        fetchBacklogData()
+      }
+    } catch (error) {
+      console.error('Failed to start sprint:', error)
+    }
+  }
+
+  const handleCompleteSprint = async (sprintId: string) => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    try {
+      const res = await fetch(`/api/sprints/${sprintId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ action: 'complete' }),
+      })
+
+      if (res.ok) {
+        fetchBacklogData()
+      }
+    } catch (error) {
+      console.error('Failed to complete sprint:', error)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
