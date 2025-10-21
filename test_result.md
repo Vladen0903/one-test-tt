@@ -152,51 +152,63 @@ backend:
 
   - task: "Calendar Events CRUD APIs"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/app/api/calendar/route.ts, /app/frontend/app/api/calendar/[id]/route.ts"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created Calendar Event APIs with GET (list with date range filtering), POST (create event with attendees), PUT (update event), PATCH (update attendee status), DELETE operations. Includes project/team scoping and attendee management."
+      - working: true
+        agent: "testing"
+        comment: "✅ CALENDAR EVENTS APIs TESTED SUCCESSFULLY: Created personal events (no project/team), project events with attendees (User2, User3), date range filtering working (found events in specified timeframe), attendee status updates (User2 accepted invitation), event updates by creator (title, description, location), authorization checks working (non-creators blocked from updates), single event retrieval with full details (attendees, project info), event deletion by creator. All CRUD operations, filtering, attendee management, and authorization working correctly."
 
   - task: "Comments CRUD APIs"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/app/api/comments/route.ts, /app/frontend/app/api/comments/[id]/route.ts"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created Comments APIs with GET (list by task), POST (create), PUT (update - author only), DELETE (delete - author only). Includes proper authorization checks for project access."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMMENTS APIs TESTED SUCCESSFULLY: Created comments from multiple users (User1, User2) with mentions support, retrieved comments for task (proper ordering), edited own comments (body updates correctly), authorization checks working (blocked editing/deleting other users' comments), deleted own comments successfully. Project access validation working (User2 added to project before commenting). All CRUD operations and author-only permissions functioning correctly."
 
   - task: "Project Members Management APIs"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/app/api/projects/[id]/members/route.ts"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created Project Members APIs with GET (list members), POST (add member by email with role), PUT (update member role - admin only), DELETE (remove member - admin only). Includes role-based permission checks."
+      - working: true
+        agent: "testing"
+        comment: "✅ PROJECT MEMBERS APIs TESTED SUCCESSFULLY: Listed project members (initial creator + added members), added members by email with roles (User2 as member, User3 as viewer), role-based permissions working (members can add others, viewers cannot), updated member roles (User2 promoted to admin), authorization checks working (only admins can update roles, viewers blocked from adding members), removed members from project, access revocation working (removed users blocked from project access). All member management operations and role-based permissions functioning correctly."
 
   - task: "Prisma Schema - Calendar Models"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/prisma/schema.prisma"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added CalendarEvent and CalendarAttendee models to Prisma schema with relations to User, Project, and Team. Includes fields for event details, time, type, color, and attendee status tracking. Database migration applied successfully."
+      - working: true
+        agent: "testing"
+        comment: "✅ CALENDAR SCHEMA TESTED SUCCESSFULLY: CalendarEvent and CalendarAttendee models working correctly through API testing. Event creation with attendees, status updates, and all relationships (User, Project, Team) functioning properly. Database operations for events and attendee management validated through comprehensive API tests."
 
 frontend:
   - task: "Backlog page - Fixed task filtering"
