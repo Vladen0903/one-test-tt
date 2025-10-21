@@ -216,7 +216,7 @@ model Tag {
 
 model Task {
   id           String    @id @default(uuid())
-  projectId    String    @map("project_id")
+  projectId    String?   @map("project_id")
   boardId      String?   @map("board_id")
   columnId     String?   @map("column_id")
   epicId       String?   @map("epic_id")
@@ -226,6 +226,7 @@ model Task {
   title        String
   description  String?
   assigneeId   String?   @map("assignee_id")
+  assignedBy   String?   @map("assigned_by") // Who assigned this task
   creatorId    String    @map("creator_id")
   priority     String    @default("medium") // lowest, low, medium, high, critical
   status       String    @default("todo")
