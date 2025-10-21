@@ -109,24 +109,30 @@ export async function GET(req: NextRequest) {
     // Get tasks due on this day or assigned to user for this day
     const tasks = await prisma.task.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            AND: [
-              { dueDate: { gte: startDate } },
-              { dueDate: { lte: endDate } },
+            OR: [
+              {
+                AND: [
+                  { dueDate: { gte: startDate } },
+                  { dueDate: { lte: endDate } },
+                ],
+              },
+              {
+                AND: [
+                  { startDate: { gte: startDate } },
+                  { startDate: { lte: endDate } },
+                ],
+              },
             ],
           },
           {
-            AND: [
-              { startDate: { gte: startDate } },
-              { startDate: { lte: endDate } },
+            OR: [
+              { assigneeId: user.id },
+              { creatorId: user.id },
+              { projectId: { in: projectIds } },
             ],
           },
-        ],
-        OR: [
-          { assigneeId: user.id },
-          { creatorId: user.id },
-          { projectId: { in: projectIds } },
         ],
       },
       include: {
