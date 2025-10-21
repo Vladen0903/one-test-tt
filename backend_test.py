@@ -18,15 +18,23 @@ class TTManagerAPITester:
     def __init__(self):
         self.base_url = BASE_URL
         self.headers = HEADERS.copy()
-        self.auth_token = None
-        self.user_id = None
+        # User tokens and IDs for multi-user testing
+        self.user1_token = None
+        self.user1_id = None
+        self.user2_token = None
+        self.user2_id = None
+        self.user3_token = None
+        self.user3_id = None
+        # Project setup
         self.team_id = None
         self.project_id = None
         self.board_id = None
         self.column_id = None
         self.task_ids = []
-        self.sprint_ids = []
-        self.label_ids = []
+        # Phase 2 test data
+        self.event_ids = []
+        self.comment_ids = []
+        self.member_ids = []
         
     def log(self, message, level="INFO"):
         """Log messages with timestamp"""
