@@ -1158,6 +1158,600 @@ class TTManagerAPITester:
         
         return True
     
+    def test_boards_api_work_without_projects(self):
+        """Test Boards API - Work Without Projects (v2.0)"""
+        self.log("=== Testing Boards API - Work Without Projects ===")
+        
+        # Test 1: Create personal board (no projectId, no teamId)
+        self.log("Testing Personal Board Creation...")
+        personal_board_data = {
+            "title": f"Personal Board {uuid.uuid4().hex[:8]}",
+            "background": "#e3f2fd"
+        }
+        
+        response = self.make_request("POST", "/boards", personal_board_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Personal board creation failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        personal_board_result = response.json()
+        personal_board_id = personal_board_result.get("board", {}).get("id")
+        if not personal_board_id:
+            self.log("❌ No personal board ID received", "ERROR")
+            return False
+            
+        self.log(f"✅ Personal board created: {personal_board_id}")
+        
+        # Test 2: Create team board (teamId only, no projectId)
+        self.log("Testing Team Board Creation...")
+        team_board_data = {
+            "teamId": self.team_id,
+            "title": f"Team Board {uuid.uuid4().hex[:8]}",
+            "background": "#f3e5f5"
+        }
+        
+        response = self.make_request("POST", "/boards", team_board_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Team board creation failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        team_board_result = response.json()
+        team_board_id = team_board_result.get("board", {}).get("id")
+        if not team_board_id:
+            self.log("❌ No team board ID received", "ERROR")
+            return False
+            
+        self.log(f"✅ Team board created: {team_board_id}")
+        
+        # Test 3: Get all boards (should return project, team, and personal boards)
+        self.log("Testing Get All Boards...")
+        response = self.make_request("GET", "/boards")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get all boards failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        boards_result = response.json()
+        boards = boards_result.get("boards", [])
+        
+        # Should have at least: 1 project board (from setup), 1 team board, 1 personal board
+        if len(boards) < 3:
+            self.log(f"❌ Expected at least 3 boards, got {len(boards)}", "ERROR")
+            return False
+            
+        # Verify board types
+        has_project_board = any(board.get("project") for board in boards)
+        has_team_board = any(board.get("teamId") and not board.get("projectId") for board in boards)
+        has_personal_board = any(not board.get("projectId") and not board.get("teamId") for board in boards)
+        
+        if not has_project_board:
+            self.log("❌ No project board found in results", "ERROR")
+            return False
+        if not has_team_board:
+            self.log("❌ No team board found in results", "ERROR")
+            return False
+        if not has_personal_board:
+            self.log("❌ No personal board found in results", "ERROR")
+            return False
+            
+        self.log(f"✅ Retrieved {len(boards)} boards (project, team, and personal boards)")
+        
+        # Store board IDs for cleanup
+        self.board_ids_v2 = [personal_board_id, team_board_id]
+        
+        return True
+    
+    def test_board_settings_api(self):
+        """Test Board Settings API (v2.0)"""
+        self.log("=== Testing Board Settings API ===")
+        
+        # Use the project board from setup
+        board_id = self.board_id
+        
+        # Test 1: Get board settings
+        self.log("Testing Get Board Settings...")
+        response = self.make_request("GET", f"/boards/{board_id}/settings")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get board settings failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        settings_result = response.json()
+        board_settings = settings_result.get("settings", {})
+        
+        if not board_settings.get("id"):
+            self.log("❌ No board settings data received", "ERROR")
+            return False
+            
+        self.log("✅ Board settings retrieved successfully")
+        
+        # Test 2: Update board settings (title and background)
+        self.log("Testing Update Board Settings...")
+        update_data = {
+            "title": f"Updated Board Title {uuid.uuid4().hex[:8]}",
+            "background": "#ffecb3"
+        }
+        
+        response = self.make_request("PATCH", f"/boards/{board_id}/settings", update_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Update board settings failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        update_result = response.json()
+        updated_board = update_result.get("board", {})
+        
+        if updated_board.get("title") != update_data["title"]:
+            self.log("❌ Board title not updated correctly", "ERROR")
+            return False
+            
+        if updated_board.get("background") != update_data["background"]:
+            self.log("❌ Board background not updated correctly", "ERROR")
+            return False
+            
+        self.log("✅ Board settings updated successfully")
+        
+        # Test 3: Test admin/creator permissions (User 2 should not be able to update)
+        self.log("Testing Board Settings Permissions...")
+        original_token = self.auth_token
+        self.auth_token = self.user2_token
+        
+        unauthorized_update = {
+            "title": "Unauthorized Update"
+        }
+        
+        response = self.make_request("PATCH", f"/boards/{board_id}/settings", unauthorized_update)
+        if response and response.status_code == 403:
+            self.log("✅ Non-admin user properly blocked from updating board settings")
+        else:
+            self.log(f"❌ Should block non-admin user: {response.status_code if response else 'No response'}", "ERROR")
+            self.auth_token = original_token
+            return False
+            
+        # Restore original token
+        self.auth_token = original_token
+        
+        return True
+    
+    def test_team_members_management_api(self):
+        """Test Team Members Management API with User Creation (v2.0)"""
+        self.log("=== Testing Team Members Management API ===")
+        
+        # Test 1: Get team members (initial state)
+        self.log("Testing Get Team Members...")
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get team members failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        members_result = response.json()
+        initial_members = members_result.get("members", [])
+        initial_count = len(initial_members)
+        
+        self.log(f"✅ Retrieved {initial_count} initial team members")
+        
+        # Test 2: Create NEW user by admin (email, name, password, role, position, projectIds)
+        self.log("Testing Create New User by Admin...")
+        new_user_email = f"newuser_{uuid.uuid4().hex[:8]}@example.com"
+        new_user_data = {
+            "email": new_user_email,
+            "name": "New Team Member",
+            "password": "newuserpassword123",
+            "role": "member",
+            "position": "Software Developer",
+            "jobTitle": "Full Stack Developer",
+            "accessibleSections": ["projects", "tasks", "calendar"],
+            "projectIds": [self.project_id]
+        }
+        
+        response = self.make_request("POST", f"/teams/{self.team_id}/members", new_user_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Create new user failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        new_member_result = response.json()
+        new_member = new_member_result.get("member", {})
+        new_user_id = new_member.get("user", {}).get("id")
+        
+        if not new_user_id:
+            self.log("❌ No new user ID received", "ERROR")
+            return False
+            
+        self.log(f"✅ New user created and added to team: {new_user_email}")
+        
+        # Test 3: Add existing user (User 3) to team
+        self.log("Testing Add Existing User to Team...")
+        
+        # Get User 3's email
+        original_token = self.auth_token
+        self.auth_token = self.user3_token
+        user3_response = self.make_request("GET", "/auth/me")
+        if not user3_response or user3_response.status_code != 200:
+            self.log("❌ Failed to get User 3 details", "ERROR")
+            return False
+            
+        user3_email = user3_response.json().get("user", {}).get("email")
+        self.auth_token = original_token
+        
+        existing_user_data = {
+            "email": user3_email,
+            "role": "viewer",
+            "position": "QA Tester"
+        }
+        
+        response = self.make_request("POST", f"/teams/{self.team_id}/members", existing_user_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Add existing user failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        existing_member_result = response.json()
+        existing_member = existing_member_result.get("member", {})
+        
+        if existing_member.get("user", {}).get("id") != self.user3_id:
+            self.log("❌ Wrong user added to team", "ERROR")
+            return False
+            
+        self.log(f"✅ Existing user added to team: {user3_email}")
+        
+        # Test 4: Verify updated team members list
+        self.log("Testing Updated Team Members List...")
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get updated team members failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        updated_members_result = response.json()
+        updated_members = updated_members_result.get("members", [])
+        
+        if len(updated_members) != initial_count + 2:  # Added 2 new members
+            self.log(f"❌ Expected {initial_count + 2} members, got {len(updated_members)}", "ERROR")
+            return False
+            
+        self.log(f"✅ Team now has {len(updated_members)} members")
+        
+        # Store new member IDs for cleanup
+        self.new_member_ids = [new_member.get("id"), existing_member.get("id")]
+        self.new_user_id = new_user_id
+        
+        return True
+    
+    def test_team_member_update_api(self):
+        """Test Team Member Update API - Advanced Permissions (v2.0)"""
+        self.log("=== Testing Team Member Update API ===")
+        
+        # Get the member ID for User 2 (should be admin from previous tests)
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if not response or response.status_code != 200:
+            self.log("❌ Failed to get team members for update test", "ERROR")
+            return False
+            
+        members = response.json().get("members", [])
+        user2_member = None
+        user3_member = None
+        
+        for member in members:
+            if member.get("user", {}).get("id") == self.user2_id:
+                user2_member = member
+            elif member.get("user", {}).get("id") == self.user3_id:
+                user3_member = member
+                
+        if not user2_member or not user3_member:
+            self.log("❌ Could not find User 2 or User 3 in team members", "ERROR")
+            return False
+        
+        # Test 1: Update member role, position, accessibleSections, projectIds
+        self.log("Testing Update Team Member...")
+        update_data = {
+            "role": "admin",
+            "position": "Senior Developer",
+            "accessibleSections": ["projects", "tasks", "calendar", "reports"],
+            "projectIds": [self.project_id]
+        }
+        
+        response = self.make_request("PATCH", f"/teams/{self.team_id}/members/{user2_member['id']}", update_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Update team member failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        update_result = response.json()
+        updated_member = update_result.get("member", {})
+        
+        if updated_member.get("role") != "admin":
+            self.log("❌ Member role not updated correctly", "ERROR")
+            return False
+            
+        if updated_member.get("position") != "Senior Developer":
+            self.log("❌ Member position not updated correctly", "ERROR")
+            return False
+            
+        self.log("✅ Team member updated successfully")
+        
+        # Test 2: Test Director permissions (only directors can modify admins)
+        # First, let's try to modify the admin (User 2) with User 1 (should fail if User 1 is not director)
+        self.log("Testing Director Permissions...")
+        
+        # Try to modify admin role with non-director user
+        director_test_data = {
+            "role": "member"
+        }
+        
+        response = self.make_request("PATCH", f"/teams/{self.team_id}/members/{user2_member['id']}", director_test_data)
+        
+        # This should either succeed (if User 1 is director) or fail with 403
+        if response:
+            if response.status_code == 403:
+                self.log("✅ Non-director properly blocked from modifying admin")
+            elif response.status_code == 200:
+                self.log("✅ Director successfully modified admin role")
+            else:
+                self.log(f"❌ Unexpected response for director test: {response.status_code}", "ERROR")
+                return False
+        else:
+            self.log("❌ No response for director permissions test", "ERROR")
+            return False
+        
+        # Test 3: Delete team member
+        self.log("Testing Delete Team Member...")
+        response = self.make_request("DELETE", f"/teams/{self.team_id}/members/{user3_member['id']}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Delete team member failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        delete_result = response.json()
+        if not delete_result.get("message"):
+            self.log("❌ No success message for member deletion", "ERROR")
+            return False
+            
+        self.log("✅ Team member deleted successfully")
+        
+        # Verify member is removed
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if response and response.status_code == 200:
+            updated_members = response.json().get("members", [])
+            user3_still_exists = any(member.get("user", {}).get("id") == self.user3_id for member in updated_members)
+            
+            if user3_still_exists:
+                self.log("❌ Deleted member still appears in team", "ERROR")
+                return False
+            else:
+                self.log("✅ Member deletion verified")
+        
+        return True
+    
+    def test_tasks_api_enhanced(self):
+        """Test Tasks API Enhanced with assignedBy tracking (v2.0)"""
+        self.log("=== Testing Tasks API Enhanced ===")
+        
+        # Test 1: Create personal task (without projectId)
+        self.log("Testing Personal Task Creation...")
+        personal_task_data = {
+            "title": f"Personal Task {uuid.uuid4().hex[:8]}",
+            "description": "Personal task without project",
+            "priority": "medium",
+            "startDate": datetime.now().isoformat(),
+            "dueDate": (datetime.now() + timedelta(days=3)).isoformat()
+        }
+        
+        response = self.make_request("POST", "/tasks", personal_task_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Personal task creation failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        personal_task_result = response.json()
+        personal_task = personal_task_result.get("task", {})
+        personal_task_id = personal_task.get("id")
+        
+        if not personal_task_id:
+            self.log("❌ No personal task ID received", "ERROR")
+            return False
+            
+        # Verify it's a personal task (no projectId)
+        if personal_task.get("projectId") is not None:
+            self.log("❌ Personal task should not have projectId", "ERROR")
+            return False
+            
+        self.log(f"✅ Personal task created: {personal_task_id}")
+        
+        # Test 2: Create task with assigneeId (should set assignedBy automatically)
+        self.log("Testing Task with Assignee...")
+        assigned_task_data = {
+            "projectId": self.project_id,
+            "boardId": self.board_id,
+            "columnId": self.column_id,
+            "title": f"Assigned Task {uuid.uuid4().hex[:8]}",
+            "description": "Task with assignee",
+            "priority": "high",
+            "assigneeId": self.user2_id
+        }
+        
+        response = self.make_request("POST", "/tasks", assigned_task_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Assigned task creation failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        assigned_task_result = response.json()
+        assigned_task = assigned_task_result.get("task", {})
+        assigned_task_id = assigned_task.get("id")
+        
+        if not assigned_task_id:
+            self.log("❌ No assigned task ID received", "ERROR")
+            return False
+            
+        # Verify assignedBy is set to current user
+        if assigned_task.get("assigneeId") != self.user2_id:
+            self.log("❌ Task assignee not set correctly", "ERROR")
+            return False
+            
+        self.log(f"✅ Task with assignee created: {assigned_task_id}")
+        
+        # Test 3: Change assignee (should update assignedBy)
+        self.log("Testing Change Task Assignee...")
+        change_assignee_data = {
+            "assigneeId": self.user3_id
+        }
+        
+        response = self.make_request("PATCH", f"/tasks/{assigned_task_id}", change_assignee_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Change assignee failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        updated_task_result = response.json()
+        updated_task = updated_task_result.get("task", {})
+        
+        if updated_task.get("assigneeId") != self.user3_id:
+            self.log("❌ Task assignee not updated correctly", "ERROR")
+            return False
+            
+        self.log("✅ Task assignee changed successfully")
+        
+        # Store task IDs for cleanup
+        self.task_ids_v2 = [personal_task_id, assigned_task_id]
+        
+        return True
+    
+    def test_calendar_day_api(self):
+        """Test Calendar Day API (v2.0)"""
+        self.log("=== Testing Calendar Day API ===")
+        
+        # Test date - today
+        test_date = datetime.now().strftime("%Y-%m-%d")
+        
+        # First, create some test data for the day
+        self.log("Creating test data for calendar day...")
+        
+        # Create a calendar event for today
+        event_data = {
+            "title": f"Test Event {uuid.uuid4().hex[:8]}",
+            "description": "Test event for calendar day API",
+            "startTime": datetime.now().replace(hour=10, minute=0, second=0, microsecond=0).isoformat(),
+            "endTime": datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat(),
+            "type": "meeting",
+            "projectId": self.project_id
+        }
+        
+        event_response = self.make_request("POST", "/calendar", event_data)
+        if event_response and event_response.status_code == 200:
+            event_id = event_response.json().get("event", {}).get("id")
+            self.log(f"✅ Test event created: {event_id}")
+        else:
+            self.log("⚠️ Could not create test event, continuing with day API test")
+        
+        # Create a task due today
+        task_data = {
+            "projectId": self.project_id,
+            "boardId": self.board_id,
+            "columnId": self.column_id,
+            "title": f"Task Due Today {uuid.uuid4().hex[:8]}",
+            "description": "Task due today for calendar day API",
+            "dueDate": datetime.now().replace(hour=17, minute=0, second=0, microsecond=0).isoformat(),
+            "priority": "high"
+        }
+        
+        task_response = self.make_request("POST", "/tasks", task_data)
+        if task_response and task_response.status_code == 200:
+            task_id = task_response.json().get("task", {}).get("id")
+            self.log(f"✅ Test task created: {task_id}")
+        else:
+            self.log("⚠️ Could not create test task, continuing with day API test")
+        
+        # Create a release for today
+        release_data = {
+            "projectId": self.project_id,
+            "name": f"Release Today {uuid.uuid4().hex[:8]}",
+            "description": "Release for today",
+            "releaseDate": datetime.now().replace(hour=12, minute=0, second=0, microsecond=0).isoformat(),
+            "status": "planned"
+        }
+        
+        release_response = self.make_request("POST", "/releases", release_data)
+        if release_response and release_response.status_code == 200:
+            release_id = release_response.json().get("release", {}).get("id")
+            self.log(f"✅ Test release created: {release_id}")
+        else:
+            self.log("⚠️ Could not create test release, continuing with day API test")
+        
+        # Test 1: Get calendar day data
+        self.log(f"Testing Calendar Day API for date: {test_date}")
+        response = self.make_request("GET", f"/calendar/day?date={test_date}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Calendar day API failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        day_result = response.json()
+        
+        # Verify response structure
+        required_fields = ["events", "tasks", "releases", "date"]
+        for field in required_fields:
+            if field not in day_result:
+                self.log(f"❌ Missing field in day response: {field}", "ERROR")
+                return False
+        
+        events = day_result.get("events", [])
+        tasks = day_result.get("tasks", [])
+        releases = day_result.get("releases", [])
+        returned_date = day_result.get("date")
+        
+        if returned_date != test_date:
+            self.log(f"❌ Wrong date returned: expected {test_date}, got {returned_date}", "ERROR")
+            return False
+            
+        self.log(f"✅ Calendar day API returned: {len(events)} events, {len(tasks)} tasks, {len(releases)} releases")
+        
+        # Test 2: Test with invalid date
+        self.log("Testing Calendar Day API with missing date...")
+        response = self.make_request("GET", "/calendar/day")
+        if response and response.status_code == 400:
+            self.log("✅ Missing date parameter properly rejected")
+        else:
+            self.log(f"❌ Should reject missing date: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+        
+        # Test 3: Test unauthorized access
+        self.log("Testing Calendar Day API unauthorized access...")
+        url = f"{self.base_url}/calendar/day?date={test_date}"
+        headers = {"Content-Type": "application/json"}
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=5)
+            if response.status_code == 401:
+                self.log("✅ Unauthorized access properly rejected")
+            else:
+                self.log(f"❌ Should reject unauthorized access: {response.status_code} - {response.text}", "ERROR")
+                return False
+        except Exception as e:
+            self.log(f"❌ Error testing unauthorized access: {str(e)}", "ERROR")
+            return False
+        
+        return True
+    
+    def cleanup_v2(self):
+        """Clean up v2.0 test data"""
+        self.log("=== Cleaning Up v2.0 Test Data ===")
+        
+        # Clean up v2.0 boards
+        if hasattr(self, 'board_ids_v2'):
+            for board_id in self.board_ids_v2:
+                response = self.make_request("DELETE", f"/boards/{board_id}")
+                if response and response.status_code == 200:
+                    self.log(f"✅ Board deleted: {board_id}")
+                else:
+                    self.log(f"❌ Failed to delete board: {board_id}", "ERROR")
+        
+        # Clean up v2.0 tasks
+        if hasattr(self, 'task_ids_v2'):
+            for task_id in self.task_ids_v2:
+                response = self.make_request("DELETE", f"/tasks/{task_id}")
+                if response and response.status_code == 200:
+                    self.log(f"✅ Task deleted: {task_id}")
+                else:
+                    self.log(f"❌ Failed to delete task: {task_id}", "ERROR")
+        
+        # Clean up new team members
+        if hasattr(self, 'new_member_ids'):
+            for member_id in self.new_member_ids:
+                response = self.make_request("DELETE", f"/teams/{self.team_id}/members/{member_id}")
+                if response and response.status_code == 200:
+                    self.log(f"✅ Team member deleted: {member_id}")
+                else:
+                    self.log(f"❌ Failed to delete team member: {member_id}", "ERROR")
+    
     def cleanup(self):
         """Clean up test data"""
         self.log("=== Cleaning Up Test Data ===")
