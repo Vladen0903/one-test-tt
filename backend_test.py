@@ -868,14 +868,17 @@ class TTManagerAPITester:
             if response and response.status_code == 200:
                 task_result = response.json()
                 task_id = task_result.get("task", {}).get("id")
+                created_task = task_result.get("task", {})
                 if task_id:
                     gantt_task_ids.append(task_id)
                     self.log(f"✅ Task with dates created: {task_data['title']}")
+                    # Debug: Check if dates were actually set
+                    self.log(f"   Debug - startDate: {created_task.get('startDate')}, dueDate: {created_task.get('dueDate')}")
                 else:
                     self.log(f"❌ Task creation failed - no ID: {task_data['title']}", "ERROR")
                     return False
             else:
-                self.log(f"❌ Task creation failed: {response.status_code if response else 'No response'}", "ERROR")
+                self.log(f"❌ Task creation failed: {response.status_code if response else 'No response'} - {response.text if response else 'No response'}", "ERROR")
                 return False
         
         # Create tasks without dates
