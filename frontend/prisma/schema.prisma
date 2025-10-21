@@ -27,6 +27,8 @@ model User {
   comments        Comment[]
   activities      Activity[]
   checklistItems  ChecklistItem[] @relation("ChecklistAssignee")
+  createdEvents   CalendarEvent[] @relation("CalendarEventCreator")
+  eventAttendees  CalendarAttendee[]
 
   @@map("users")
 }
