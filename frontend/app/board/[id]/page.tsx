@@ -321,106 +321,12 @@ export default function BoardPage() {
       </main>
 
       {/* Task Detail Modal */}
-      {selectedTask && editingTask && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-card border-b border-border p-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold">Task Details</h2>
-              <button
-                onClick={() => setSelectedTask(null)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Title</label>
-                <input
-                  type="text"
-                  value={editingTask.title}
-                  onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <textarea
-                  value={editingTask.description}
-                  onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
-                  className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                  rows={4}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Priority</label>
-                  <select
-                    value={editingTask.priority}
-                    onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value })}
-                    className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                  >
-                    <option value="lowest">Lowest</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="critical">Critical</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    <Calendar className="w-4 h-4 inline mr-1" />
-                    Due Date
-                  </label>
-                  <input
-                    type="date"
-                    value={editingTask.dueDate}
-                    onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
-                    className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <User className="w-4 h-4 inline mr-1" />
-                  Assignee
-                </label>
-                <select
-                  value={editingTask.assigneeId}
-                  onChange={(e) => setEditingTask({ ...editingTask, assigneeId: e.target.value })}
-                  className="w-full px-3 py-2 bg-secondary border border-input rounded-md"
-                >
-                  <option value="">Unassigned</option>
-                  {projectMembers.map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.name} ({member.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex gap-2 pt-4 border-t border-border">
-                <button
-                  onClick={handleUpdateTask}
-                  className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-md"
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={handleDeleteTask}
-                  className="px-4 py-2 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-md"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {selectedTaskId && (
+        <TaskModal
+          taskId={selectedTaskId}
+          onClose={() => setSelectedTaskId(null)}
+          onUpdate={fetchData}
+        />
       )}
     </div>
   )
