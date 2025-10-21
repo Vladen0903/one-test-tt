@@ -43,6 +43,11 @@ export async function getUserFromToken(token: string | null) {
       name: true,
       avatarUrl: true,
       jobTitle: true,
+      role: true,
+      language: true,
+      phone: true,
+      telegram: true,
+      accessibleSections: true,
       settings: true,
     }
   })
