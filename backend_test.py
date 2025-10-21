@@ -632,6 +632,516 @@ class TTManagerAPITester:
         
         return True
     
+    def test_multi_user_setup(self):
+        """Setup multiple users for testing member management"""
+        self.log("=== Setting up multiple users ===")
+        
+        # User 1 (already created in test_user_registration_and_login)
+        self.user1_token = self.auth_token
+        self.user1_id = self.user_id
+        
+        # Create User 2
+        user2_email = f"testuser2_{uuid.uuid4().hex[:8]}@example.com"
+        user2_data = {
+            "email": user2_email,
+            "password": "testpassword123",
+            "name": "Test User 2"
+        }
+        
+        response = self.make_request("POST", "/auth/register", user2_data, auth_required=False)
+        if not response or response.status_code != 200:
+            self.log(f"❌ User 2 registration failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        user2_result = response.json()
+        self.user2_token = user2_result.get("token")
+        self.user2_id = user2_result.get("user", {}).get("id")
+        
+        if not self.user2_token:
+            self.log("❌ No auth token received for User 2", "ERROR")
+            return False
+            
+        self.log(f"✅ User 2 registered: {user2_email}")
+        
+        # Create User 3
+        user3_email = f"testuser3_{uuid.uuid4().hex[:8]}@example.com"
+        user3_data = {
+            "email": user3_email,
+            "password": "testpassword123",
+            "name": "Test User 3"
+        }
+        
+        response = self.make_request("POST", "/auth/register", user3_data, auth_required=False)
+        if not response or response.status_code != 200:
+            self.log(f"❌ User 3 registration failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        user3_result = response.json()
+        self.user3_token = user3_result.get("token")
+        self.user3_id = user3_result.get("user", {}).get("id")
+        
+        if not self.user3_token:
+            self.log("❌ No auth token received for User 3", "ERROR")
+            return False
+            
+        self.log(f"✅ User 3 registered: {user3_email}")
+        return True
+    
+    def test_releases_crud_apis(self):
+        """Test all Releases CRUD API endpoints"""
+        self.log("=== Testing Releases CRUD APIs ===")
+        
+        # Test 1: Create Releases with different statuses
+        self.log("Testing Release Creation...")
+        releases_data = [
+            {
+                "projectId": self.project_id,
+                "name": "Release v1.0.0",
+                "description": "Initial release with core features",
+                "releaseDate": (datetime.now() + timedelta(days=30)).isoformat(),
+                "startDate": datetime.now().isoformat(),
+                "endDate": (datetime.now() + timedelta(days=25)).isoformat(),
+                "status": "planned"
+            },
+            {
+                "projectId": self.project_id,
+                "name": "Release v1.1.0",
+                "description": "Feature enhancement release",
+                "releaseDate": (datetime.now() + timedelta(days=60)).isoformat(),
+                "startDate": (datetime.now() + timedelta(days=30)).isoformat(),
+                "endDate": (datetime.now() + timedelta(days=55)).isoformat(),
+                "status": "on_track"
+            },
+            {
+                "projectId": self.project_id,
+                "name": "Release v1.2.0",
+                "description": "Bug fixes and improvements",
+                "status": "delayed"
+            },
+            {
+                "projectId": self.project_id,
+                "name": "Release v0.9.0",
+                "description": "Already released version",
+                "releaseDate": (datetime.now() - timedelta(days=10)).isoformat(),
+                "status": "released"
+            }
+        ]
+        
+        for release_data in releases_data:
+            response = self.make_request("POST", "/releases", release_data)
+            if not response or response.status_code != 200:
+                self.log(f"❌ Release creation failed: {response.status_code if response else 'No response'}", "ERROR")
+                return False
+                
+            release_result = response.json()
+            release_id = release_result.get("release", {}).get("id")
+            if not release_id:
+                self.log("❌ No release ID received", "ERROR")
+                return False
+                
+            self.release_ids.append(release_id)
+            self.log(f"✅ Release created: {release_data['name']} (Status: {release_data['status']})")
+        
+        # Test 2: Get Releases for Project
+        self.log("Testing Get Releases...")
+        response = self.make_request("GET", f"/releases?projectId={self.project_id}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get releases failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        releases_result = response.json()
+        releases = releases_result.get("releases", [])
+        if len(releases) != len(releases_data):
+            self.log(f"❌ Expected {len(releases_data)} releases, got {len(releases)}", "ERROR")
+            return False
+            
+        # Verify sorting by releaseDate (desc)
+        release_dates = [r.get("releaseDate") for r in releases if r.get("releaseDate")]
+        if len(release_dates) > 1:
+            for i in range(len(release_dates) - 1):
+                if release_dates[i] < release_dates[i + 1]:
+                    self.log("❌ Releases not sorted by releaseDate desc", "ERROR")
+                    return False
+                    
+        self.log(f"✅ Retrieved {len(releases)} releases (properly sorted)")
+        
+        # Test 3: Test all status values
+        self.log("Testing Release Status Values...")
+        status_counts = {}
+        for release in releases:
+            status = release.get("status")
+            status_counts[status] = status_counts.get(status, 0) + 1
+            
+        expected_statuses = ["planned", "on_track", "delayed", "released"]
+        for status in expected_statuses:
+            if status not in status_counts:
+                self.log(f"❌ Missing release with status: {status}", "ERROR")
+                return False
+                
+        self.log("✅ All release status values present")
+        
+        # Test 4: Delete Release (should unlink tasks)
+        self.log("Testing Delete Release...")
+        release_to_delete = self.release_ids[0]
+        
+        response = self.make_request("DELETE", f"/releases/{release_to_delete}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Delete release failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        delete_result = response.json()
+        if not delete_result.get("success"):
+            self.log("❌ Delete release did not return success", "ERROR")
+            return False
+            
+        # Remove from our list
+        self.release_ids.remove(release_to_delete)
+        self.log("✅ Release deleted successfully")
+        
+        # Verify release is deleted
+        response = self.make_request("GET", f"/releases?projectId={self.project_id}")
+        if response and response.status_code == 200:
+            updated_releases = response.json().get("releases", [])
+            if len(updated_releases) != len(releases_data) - 1:
+                self.log(f"❌ Expected {len(releases_data) - 1} releases after deletion, got {len(updated_releases)}", "ERROR")
+                return False
+            self.log("✅ Release deletion verified")
+        
+        return True
+    
+    def test_gantt_data_api(self):
+        """Test Gantt Data API endpoint"""
+        self.log("=== Testing Gantt Data API ===")
+        
+        # First, create tasks with different date configurations
+        self.log("Creating tasks with dates for Gantt testing...")
+        
+        # Create tasks with dates
+        tasks_with_dates = [
+            {
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task with Start and Due Date",
+                "description": "Task for Gantt chart testing",
+                "startDate": datetime.now().isoformat(),
+                "dueDate": (datetime.now() + timedelta(days=7)).isoformat(),
+                "priority": "high"
+            },
+            {
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task with Only Due Date",
+                "description": "Task with due date only",
+                "dueDate": (datetime.now() + timedelta(days=14)).isoformat(),
+                "priority": "medium"
+            },
+            {
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task with Only Start Date",
+                "description": "Task with start date only",
+                "startDate": (datetime.now() + timedelta(days=3)).isoformat(),
+                "priority": "low"
+            }
+        ]
+        
+        # Create tasks without dates (should not appear in Gantt)
+        tasks_without_dates = [
+            {
+                "projectId": self.project_id,
+                "boardId": self.board_id,
+                "columnId": self.column_id,
+                "title": "Task without Dates",
+                "description": "This task should not appear in Gantt chart",
+                "priority": "medium"
+            }
+        ]
+        
+        gantt_task_ids = []
+        
+        # Create tasks with dates
+        for task_data in tasks_with_dates:
+            response = self.make_request("POST", "/tasks", task_data)
+            if response and response.status_code == 200:
+                task_result = response.json()
+                task_id = task_result.get("task", {}).get("id")
+                if task_id:
+                    gantt_task_ids.append(task_id)
+                    self.log(f"✅ Task with dates created: {task_data['title']}")
+                else:
+                    self.log(f"❌ Task creation failed - no ID: {task_data['title']}", "ERROR")
+                    return False
+            else:
+                self.log(f"❌ Task creation failed: {response.status_code if response else 'No response'}", "ERROR")
+                return False
+        
+        # Create tasks without dates
+        for task_data in tasks_without_dates:
+            response = self.make_request("POST", "/tasks", task_data)
+            if response and response.status_code == 200:
+                task_result = response.json()
+                task_id = task_result.get("task", {}).get("id")
+                if task_id:
+                    self.task_ids.append(task_id)  # Add to cleanup list
+                    self.log(f"✅ Task without dates created: {task_data['title']}")
+                else:
+                    self.log(f"❌ Task creation failed - no ID: {task_data['title']}", "ERROR")
+                    return False
+            else:
+                self.log(f"❌ Task creation failed: {response.status_code if response else 'No response'}", "ERROR")
+                return False
+        
+        # Test Gantt Data API
+        self.log("Testing Gantt Data API...")
+        response = self.make_request("GET", f"/gantt?projectId={self.project_id}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Gantt data API failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        gantt_result = response.json()
+        gantt_tasks = gantt_result.get("tasks", [])
+        
+        # Verify only tasks with dates are returned
+        if len(gantt_tasks) != len(tasks_with_dates):
+            self.log(f"❌ Expected {len(tasks_with_dates)} tasks in Gantt, got {len(gantt_tasks)}", "ERROR")
+            return False
+            
+        self.log(f"✅ Gantt API returned {len(gantt_tasks)} tasks (only tasks with dates)")
+        
+        # Verify task data includes required fields
+        required_fields = ["id", "title", "startDate", "dueDate", "assignee", "sprint", "epic", "dependencies"]
+        for task in gantt_tasks:
+            for field in required_fields:
+                if field not in task:
+                    self.log(f"❌ Missing field in Gantt task: {field}", "ERROR")
+                    return False
+                    
+            # Verify at least one date field is not null
+            if not task.get("startDate") and not task.get("dueDate"):
+                self.log("❌ Gantt task has no dates (should be filtered out)", "ERROR")
+                return False
+                
+        self.log("✅ Gantt tasks include all required fields and have dates")
+        
+        # Verify tasks are sorted by startDate
+        start_dates = [task.get("startDate") for task in gantt_tasks if task.get("startDate")]
+        if len(start_dates) > 1:
+            for i in range(len(start_dates) - 1):
+                if start_dates[i] > start_dates[i + 1]:
+                    self.log("❌ Gantt tasks not sorted by startDate", "ERROR")
+                    return False
+                    
+        self.log("✅ Gantt tasks properly sorted by startDate")
+        
+        # Test unauthorized access
+        self.log("Testing Gantt API unauthorized access...")
+        url = f"{self.base_url}/gantt?projectId={self.project_id}"
+        headers = {"Content-Type": "application/json"}
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            if response and response.status_code == 401:
+                self.log("✅ Unauthorized access properly rejected")
+            else:
+                self.log(f"❌ Should reject unauthorized access: {response.status_code if response else 'No response'}", "ERROR")
+                return False
+        except Exception as e:
+            self.log(f"❌ Error testing unauthorized access: {str(e)}", "ERROR")
+            return False
+        
+        # Add gantt task IDs to cleanup list
+        self.task_ids.extend(gantt_task_ids)
+        
+        return True
+    
+    def test_enhanced_project_members_api(self):
+        """Test Enhanced Project Members API - Key Bug Fix"""
+        self.log("=== Testing Enhanced Project Members API (Bug Fix) ===")
+        
+        # Switch to User 1 token for admin operations
+        original_token = self.auth_token
+        self.auth_token = self.user1_token
+        
+        # Test 1: Add User 2 to project (should also add to team)
+        self.log("Testing Add Member to Project (Bug Fix Test)...")
+        
+        # Get User 2's email for adding
+        self.auth_token = self.user2_token
+        user2_response = self.make_request("GET", "/auth/me")
+        if not user2_response or user2_response.status_code != 200:
+            self.log("❌ Failed to get User 2 details", "ERROR")
+            return False
+            
+        user2_email = user2_response.json().get("user", {}).get("email")
+        
+        # Switch back to User 1 (admin)
+        self.auth_token = self.user1_token
+        
+        add_member_data = {
+            "email": user2_email,
+            "role": "member"
+        }
+        
+        response = self.make_request("POST", f"/projects/{self.project_id}/members", add_member_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Add member to project failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        member_result = response.json()
+        added_member = member_result.get("member", {})
+        
+        if not added_member.get("id"):
+            self.log("❌ No member ID received", "ERROR")
+            return False
+            
+        self.log(f"✅ User 2 added to project as member")
+        
+        # Test 2: Verify User 2 is added to PROJECT members
+        self.log("Verifying User 2 in project members...")
+        response = self.make_request("GET", f"/projects/{self.project_id}/members")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get project members failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        members_result = response.json()
+        project_members = members_result.get("members", [])
+        
+        user2_in_project = False
+        for member in project_members:
+            if member.get("user", {}).get("id") == self.user2_id:
+                user2_in_project = True
+                break
+                
+        if not user2_in_project:
+            self.log("❌ User 2 not found in project members", "ERROR")
+            return False
+            
+        self.log("✅ User 2 confirmed in project members")
+        
+        # Test 3: CRITICAL - Verify User 2 is ALSO added to TEAM members (Bug Fix)
+        self.log("CRITICAL TEST: Verifying User 2 is added to team members...")
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if not response or response.status_code != 200:
+            self.log(f"❌ Get team members failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        team_members_result = response.json()
+        team_members = team_members_result.get("members", [])
+        
+        user2_in_team = False
+        for member in team_members:
+            if member.get("user", {}).get("id") == self.user2_id:
+                user2_in_team = True
+                break
+                
+        if not user2_in_team:
+            self.log("❌ CRITICAL BUG: User 2 NOT added to team members when added to project!", "ERROR")
+            return False
+            
+        self.log("✅ CRITICAL BUG FIX VERIFIED: User 2 automatically added to team members")
+        
+        # Test 4: User 2 can now access the team
+        self.log("Testing User 2 can access team...")
+        self.auth_token = self.user2_token
+        
+        response = self.make_request("GET", "/teams")
+        if not response or response.status_code != 200:
+            self.log(f"❌ User 2 cannot list teams: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        teams_result = response.json()
+        teams = teams_result.get("teams", [])
+        
+        user2_can_see_team = False
+        for team in teams:
+            if team.get("id") == self.team_id:
+                user2_can_see_team = True
+                break
+                
+        if not user2_can_see_team:
+            self.log("❌ User 2 cannot see the team", "ERROR")
+            return False
+            
+        self.log("✅ User 2 can access team after being added to project")
+        
+        # Test 5: User 2 can access the project
+        self.log("Testing User 2 can access project...")
+        response = self.make_request("GET", "/projects")
+        if not response or response.status_code != 200:
+            self.log(f"❌ User 2 cannot list projects: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        projects_result = response.json()
+        projects = projects_result.get("projects", [])
+        
+        user2_can_see_project = False
+        for project in projects:
+            if project.get("id") == self.project_id:
+                user2_can_see_project = True
+                break
+                
+        if not user2_can_see_project:
+            self.log("❌ User 2 cannot see the project", "ERROR")
+            return False
+            
+        self.log("✅ User 2 can access project after being added")
+        
+        # Test 6: User 2 can access project data
+        self.log("Testing User 2 can access project data...")
+        response = self.make_request("GET", f"/projects/{self.project_id}")
+        if not response or response.status_code != 200:
+            self.log(f"❌ User 2 cannot access project data: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        self.log("✅ User 2 can access project data successfully")
+        
+        # Test 7: Add User 3 with different role
+        self.log("Testing Add User 3 as viewer...")
+        self.auth_token = self.user1_token  # Switch back to admin
+        
+        # Get User 3's email
+        self.auth_token = self.user3_token
+        user3_response = self.make_request("GET", "/auth/me")
+        if not user3_response or user3_response.status_code != 200:
+            self.log("❌ Failed to get User 3 details", "ERROR")
+            return False
+            
+        user3_email = user3_response.json().get("user", {}).get("email")
+        
+        # Switch back to User 1 (admin)
+        self.auth_token = self.user1_token
+        
+        add_user3_data = {
+            "email": user3_email,
+            "role": "viewer"
+        }
+        
+        response = self.make_request("POST", f"/projects/{self.project_id}/members", add_user3_data)
+        if not response or response.status_code != 200:
+            self.log(f"❌ Add User 3 to project failed: {response.status_code if response else 'No response'}", "ERROR")
+            return False
+            
+        self.log("✅ User 3 added to project as viewer")
+        
+        # Verify User 3 is also in team
+        response = self.make_request("GET", f"/teams/{self.team_id}/members")
+        if response and response.status_code == 200:
+            team_members = response.json().get("members", [])
+            user3_in_team = any(member.get("user", {}).get("id") == self.user3_id for member in team_members)
+            if user3_in_team:
+                self.log("✅ User 3 also automatically added to team")
+            else:
+                self.log("❌ User 3 not added to team", "ERROR")
+                return False
+        
+        # Restore original token
+        self.auth_token = original_token
+        
+        return True
+    
     def cleanup(self):
         """Clean up test data"""
         self.log("=== Cleaning Up Test Data ===")
