@@ -166,15 +166,15 @@ export default function BoardsPage() {
                 <div className="flex items-start gap-3 mb-4">
                   <Layout className="w-6 h-6 text-primary flex-shrink-0" />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-1">{board.name}</h3>
+                    <h3 className="font-semibold text-lg mb-1">{board.title}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {board.project.name} ({board.project.key})
+                      {board.project ? `${board.project.name} (${board.project.key})` : t('workWithoutProject')}
                     </p>
                   </div>
                 </div>
-                {board.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {board.description}
+                {board._count && (
+                  <p className="text-sm text-muted-foreground">
+                    {board._count.tasks} {t('tasks')}
                   </p>
                 )}
               </div>
