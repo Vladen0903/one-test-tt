@@ -90,7 +90,8 @@ export default function BacklogPage() {
 
       if (tasksRes.ok) {
         const tasksData = await tasksRes.json()
-        const backlogTasks = (tasksData.tasks || []).filter((t: Task) => !t.assignee)
+        // Filter backlog tasks (tasks without sprint)
+        const backlogTasks = (tasksData.tasks || []).filter((t: any) => !t.sprintId)
         setTasks(backlogTasks)
       }
 
