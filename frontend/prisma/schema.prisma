@@ -107,13 +107,15 @@ model ProjectMember {
 
 model Board {
   id         String   @id @default(uuid())
-  projectId  String   @map("project_id")
+  projectId  String?  @map("project_id")
+  teamId     String?  @map("team_id")
+  createdBy  String   @map("created_by")
   title      String
   background String?
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  project  Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project  Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   columns  Column[]
   tasks    Task[]
   releases ReleaseBoard[]
