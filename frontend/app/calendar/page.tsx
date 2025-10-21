@@ -123,16 +123,53 @@ export default function CalendarPage() {
         params.append('projectId', selectedProject)
       }
 
-      const res = await fetch(`/api/calendar?${params.toString()}`, {
+      // Fetch events
+      const eventsRes = fetch(`/api/calendar?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      if (res.ok) {
-        const data = await res.json()
+      // Fetch tasks with due dates
+      const tasksRes = selectedProject !== 'all'
+        ? fetch(`/api/tasks?projectId=${selectedProject}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        : null
+
+      // Fetch releases
+      const releasesRes = selectedProject !== 'all'
+        ? fetch(`/api/releases?projectId=${selectedProject}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        : null
+
+      const [eventsData, tasksData, releasesData] = await Promise.all([
+        eventsRes,
+        tasksRes,
+        releasesRes,
+      ])
+
+      if (eventsData.ok) {
+        const data = await eventsData.json()
         setEvents(data.events || [])
       }
+
+      if (tasksData && tasksData.ok) {
+        const data = await tasksData.json()
+        const tasksWithDates = (data.tasks || []).filter((t: any) => t.dueDate)
+        setTasks(tasksWithDates)
+      } else {
+        setTasks([])
+      }
+
+      if (releasesData && releasesData.ok) {
+        const data = await releasesData.json()
+        const releasesWithDates = (data.releases || []).filter((r: any) => r.releaseDate)
+        setReleases(releasesWithDates)
+      } else {
+        setReleases([])
+      }
     } catch (error) {
-      console.error('Failed to fetch events:', error)
+      console.error('Failed to fetch calendar data:', error)
     }
   }
 
